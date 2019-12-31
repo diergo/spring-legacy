@@ -1,5 +1,6 @@
 package diergo.spring.legacy;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
@@ -48,13 +49,18 @@ public class LegacySpringAccessTest {
     }
 
     @BeforeEach
-    public void createSpringContextWithTestBean() {
+    void createSpringContextWithTestBean() {
         StaticApplicationContext inner = new StaticApplicationContext();
         inner.registerSingleton("testBean", TestBean.class);
         beanFactory = inner.getBeanFactory();
     }
 
-    public static class TestBean {
+    @AfterEach
+    void cleanupContext() {
+        new LegacySpringAccess().destroy();
+    }
+
+    static class TestBean {
 
         public void doIt() {
         }
