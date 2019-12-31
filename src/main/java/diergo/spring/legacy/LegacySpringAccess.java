@@ -42,7 +42,7 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
 
     @Override
     public void destroy() {
-        LegacySpringAccess.BEAN_FACTORY_HOLDER.set(null);
+        BEAN_FACTORY_HOLDER.set(null);
     }
 
     private static class DelegatingTargetSource<T> implements TargetSource {
