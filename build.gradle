@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+sourceCompatibility = 1.8
+
+ext {
+    versions = [:]
+    versions.spring = '5.0.0.RELEASE'
+    versions.junit = '5.5.1'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    api "org.springframework:spring-context:${versions.spring}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
+            "org.springframework:spring-test:${versions.spring}",
+            'org.hamcrest:hamcrest-library:2.1'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+}
+
+test {
+    useJUnitPlatform()
+}
