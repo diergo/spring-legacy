@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * Import this configuration from one of your configuration classes before using it.
  *
  * @see org.springframework.context.annotation.Import
+ * @since 1.0
  */
 @Configuration
 public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {

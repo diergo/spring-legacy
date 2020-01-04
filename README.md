@@ -17,3 +17,32 @@ Have a look into the [example](src/test/java/example/legacy/LegacyCodeUsingSprin
 [integration test](src/test/java/example/IntegrationTest.java). The usage has to be prepared using a Spring
 configuration including the `LegacySpringAccess` which can be easily
 [imported from your own configuration](src/test/java/example/spring/SpringConfig.java).
+
+
+Dependency
+----------
+
+To integrate the library in your project, use the following dependency:
+
+**gradle:**
+
+```gradle
+  compile 'diergo:spring-legacy:1.0.0-SNAPSHOT'
+```
+
+**maven:**
+```xml
+  <dependency>
+    <groupId>diergo</groupId>
+    <artifactId>spring-legacy</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </dependency>
+```
+
+The library has no external dependencies except [Spring Framework 5](https://spring.io/projects/spring-framework) (spring-context 5.1.0.RELEASE).
+
+
+License
+-------
+
+This library is published under [Apache License Version 2.0](LICENSE).
