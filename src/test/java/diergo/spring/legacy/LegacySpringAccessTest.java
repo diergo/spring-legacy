@@ -18,21 +18,21 @@ public class LegacySpringAccessTest {
 
     @Test
     public void springBeanCanBeRetrievedAsProxyBeforeApplicationContextAvailable() {
-        TestBean actual = LegacySpringAccess.getInstance(TestBean.class);
+        TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
         assertThat(AopUtils.isAopProxy(actual), is(true));
     }
 
     @Test
     public void springBeanProxyCannotBeUsedBeforeApplicationContextAvailable() {
-        TestBean actual = LegacySpringAccess.getInstance(TestBean.class);
+        TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
         assertThrows(FatalBeanException.class, actual::doIt);
     }
 
     @Test
     public void springBeanProxyCanBeUsedAfterApplicationContextAppeared() {
-        TestBean actual = LegacySpringAccess.getInstance(TestBean.class);
+        TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
         new LegacySpringAccess().setBeanFactory(beanFactory);
 
@@ -43,7 +43,7 @@ public class LegacySpringAccessTest {
     public void springBeanIsRetrievedFromApplicationContextIfAvailable() {
         new LegacySpringAccess().setBeanFactory(beanFactory);
 
-        TestBean actual = LegacySpringAccess.getInstance(TestBean.class);
+        TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
         assertThat(AopUtils.isAopProxy(actual), is(false));
     }

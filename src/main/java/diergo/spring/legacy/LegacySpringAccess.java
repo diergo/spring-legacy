@@ -27,7 +27,7 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
      * Do not use such proxies from constructor code!
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getInstance(Class<T> type) {
+    public static <T> T getSpringBean(Class<T> type) {
         BeanFactory context = BEAN_FACTORY_HOLDER.get();
         if (context == null) {
             return (T) ProxyFactory.getProxy(new DelegatingTargetSource<>(type));
