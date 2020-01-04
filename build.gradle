@@ -7,11 +7,10 @@ ext {
     versions = [:]
     versions.spring = '5.1.12.RELEASE'
     versions.junit = '5.5.1'
-    versionSuffix = '-SNAPSHOT'
 }
 
 sourceCompatibility = 1.8
-version = "${majorVersion}.${minorVersion}.${patchVersion}${versionSuffix}"
+version = "${majorVersion}.${minorVersion}.${patchVersion}-SNAPSHOT"
 
 repositories {
     jcenter()
@@ -55,6 +54,21 @@ artifacts {
     archives javadocJar
 }
 
+tasks.withType(Jar) {
+    manifest {
+        attributes(
+                "Automatic-Module-Name": "${project.group}.${project.name}",
+                "Specification-Title": project.description,
+                "Specification-Version": "${majorVersion}.${minorVersion}",
+                "Specification-Vendor": vendor,
+                "Implementation-Title": project.description,
+                "Implementation-Version": "${majorVersion}.${minorVersion}.${patchVersion}",
+                "Implementation-Vendor": vendor,
+                "Implementation-Vendor-Id": project.group
+        )
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -63,4 +77,11 @@ publishing {
             artifact javadocJar
         }
     }
+}
+
+task release(group: 'Publishing', description: 'Build the testes artifacts for a release.') {
+    doFirst {
+        project.version = "${majorVersion}.${minorVersion}.${patchVersion}"
+    }
+    finalizedBy build
 }
