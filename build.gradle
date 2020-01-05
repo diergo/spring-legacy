@@ -8,6 +8,7 @@ ext {
     versions = [:]
     versions.spring = '5.1.12.RELEASE'
     versions.junit = '5.5.1'
+    versions.spotbugs = '3.1.12'
 }
 
 sourceCompatibility = 1.8
@@ -20,6 +21,7 @@ repositories {
 dependencies {
     api "org.springframework:spring-context:${versions.spring.replaceAll('[0-9]+\\.RELEASE','0.RELEASE')}"
     implementation "org.springframework:spring-context:${versions.spring}"
+    compileOnly "com.github.spotbugs:spotbugs-annotations:${versions.spotbugs}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
@@ -32,7 +34,7 @@ test {
 }
 
 spotbugs {
-    toolVersion = '3.1.12'
+    toolVersion = versions.spotbugs
 }
 
 javadoc {

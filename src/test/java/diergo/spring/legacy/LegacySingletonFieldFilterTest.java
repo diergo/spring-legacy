@@ -4,12 +4,16 @@ import example.legacy.LegacySingletonByField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 
 public class LegacySingletonFieldFilterTest {
+
+    private static final MetadataReaderFactory EXAMPLE_FACTORY = new SimpleMetadataReaderFactory();
 
     private LegacySingletonFieldFilter tested = new LegacySingletonFieldFilter();
 
@@ -44,7 +48,7 @@ public class LegacySingletonFieldFilterTest {
     }
 
     private boolean matchTypeFilter(Class<?> type) {
-        return tested.match(new TestMetadataReader(type), null);
+        return tested.match(new TestMetadataReader(type), EXAMPLE_FACTORY);
     }
 
     private boolean matchBeanDefinition(Class<?> type) {

@@ -3,11 +3,15 @@ package diergo.spring.legacy;
 import example.legacy.LegacySingletonByMethod;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class LegacySingletonMethodFilterTest {
+
+    private static final MetadataReaderFactory EXAMPLE_FACTORY = new SimpleMetadataReaderFactory();
 
     private LegacySingletonMethodFilter tested = new LegacySingletonMethodFilter();
 
@@ -33,7 +37,7 @@ public class LegacySingletonMethodFilterTest {
     }
 
     private boolean matchTypeFilter(Class<?> type) {
-        return tested.match(new TestMetadataReader(type), null);
+        return tested.match(new TestMetadataReader(type), EXAMPLE_FACTORY);
     }
 
     private boolean matchBeanDefinition(Class<?> type) {
