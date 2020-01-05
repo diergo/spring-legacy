@@ -35,8 +35,8 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
             adb.setInstanceSupplier(() -> {
                 access.setAccessible(true);
                 try {
-                    return access.get(adb.getBeanClass());
-                } catch (IllegalAccessException e) {
+                    return access.get(adb.hasBeanClass() ? adb.getBeanClass() : Class.forName(adb.getBeanClassName()));
+                } catch (IllegalAccessException | ClassNotFoundException e) {
                     throw new BeanCreationException("Cannot create bean using static singleton field " + access, e);
                 }
             });

@@ -3,6 +3,7 @@ package diergo.spring.legacy;
 import example.legacy.LegacySingletonByField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -19,8 +20,17 @@ public class LegacySingletonFieldFilterTest {
     }
 
     @Test
-    public void beanDefinitionOfSingletonWithStaticFieldGetAnInstanceSupplierOnCustomize() {
+    public void rootBeanDefinitionOfSingletonWithStaticFieldGetAnInstanceSupplierOnCustomize() {
         RootBeanDefinition actual = new RootBeanDefinition(LegacySingletonByField.class);
+
+        tested.customize(actual);
+
+        assertThat(actual.getInstanceSupplier().get(), isA(LegacySingletonByField.class));
+    }
+
+    @Test
+    public void scannedBbeanDefinitionOfSingletonWithStaticFieldGetAnInstanceSupplierOnCustomize() {
+        ScannedGenericBeanDefinition actual = new ScannedGenericBeanDefinition(new TestMetadataReader(LegacySingletonByField.class));
 
         tested.customize(actual);
 
