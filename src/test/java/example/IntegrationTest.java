@@ -3,6 +3,7 @@ package example;
 import example.legacy.LegacyCodeUsingSpring;
 import example.legacy.LegacySingletonByField;
 import example.legacy.LegacySingletonByMethod;
+import example.spring.SpringBeanInjectedLegacy;
 import example.spring.SpringConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ public class IntegrationTest {
     private AnnotationConfigApplicationContext applicationContext;
 
     @Test
-    void legacyCodeCanUseSpringBeansIfRefreshed() {
+    public void legacyCodeCanUseSpringBeansIfRefreshed() {
         LegacyCodeUsingSpring legacyCode = new LegacyCodeUsingSpring();
         assertThat(legacyCode.canUseSpring(), is(false));
         applicationContext.refresh();
@@ -26,10 +27,16 @@ public class IntegrationTest {
     }
 
     @Test
-    void legacySingletonsAreRegistered() {
+    public void legacySingletonsAreRegistered() {
         applicationContext.refresh();
         assertThat(applicationContext.getBean(LegacySingletonByField.class), notNullValue());
         assertThat(applicationContext.getBean(LegacySingletonByMethod.class), notNullValue());
+    }
+
+    @Test
+    public void legacySingletonCanBeInjected() {
+        applicationContext.refresh();
+        assertThat(applicationContext.getBean(SpringBeanInjectedLegacy.class), notNullValue());
     }
 
     @BeforeEach
