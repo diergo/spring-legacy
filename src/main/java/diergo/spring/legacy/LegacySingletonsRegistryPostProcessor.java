@@ -20,6 +20,10 @@ import java.util.List;
  */
 public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostProcessor {
 
+    /**
+     * Build a post processor scanning the base packages passed.
+     * If no packages are passed, the package of the caller is used.
+     */
     public static Builder scanForSingletons(String... basePackages) {
         if (basePackages.length == 0) {
             StackTraceElement caller = new Throwable().getStackTrace()[1];
@@ -65,26 +69,51 @@ public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostP
             this.basePackages = basePackages;
         }
 
+        /**
+         * Use a different bean name generator.
+         *
+         * @see BeanDefinitionReaderUtils#generateBeanName(BeanDefinition, BeanDefinitionRegistry)
+         */
         public Builder beanNaming(BeanNameGenerator beanNameGenerator) {
             this.beanNameGenerator = beanNameGenerator;
             return this;
         }
 
+        /**
+         * Adjust the order of the {@link #asPostProcessor()}.
+         *
+         * @see org.springframework.core.PriorityOrdered
+         */
         public Builder ordered(int order) {
             this.order = order;
             return this;
         }
 
+        /**
+         * Include singletons defined by non private static final fields of the declaring type.
+         * Field names may be used to restrict the recognized fields.
+         */
         public Builder fromStaticFields(String... fieldNames) {
             included.add(new LegacySingletonFieldFilter(fieldNames));
             return this;
         }
 
+        /**
+         * Include singletons defined by non private static final getters of the declaring type.
+         * Method names may be used to restrict the recognized methods.
+         */
         public Builder fromStaticMethods(String... methodNames) {
             included.add(new LegacySingletonMethodFilter(methodNames));
             return this;
         }
 
+        /**
+         * Create the post processor as configured by the builder.
+         * If neither {@link #fromStaticFields(String...)} nor {@link #fromStaticMethods(String...)} has been called
+         * any static methods and fields will be recognized.
+         *
+         * @see BeanDefinitionRegistryPostProcessor
+         */
         public LegacySingletonsRegistryPostProcessor asPostProcessor() {
             if (included.isEmpty()) {
                 fromStaticMethods();

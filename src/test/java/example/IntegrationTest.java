@@ -1,18 +1,21 @@
 package example;
 
 import example.legacy.LegacyCodeUsingSpring;
+import example.legacy.LegacySingletonByField;
+import example.legacy.LegacySingletonByMethod;
 import example.spring.SpringConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class IntegrationTest {
 
-    private static AnnotationConfigApplicationContext applicationContext;
+    private AnnotationConfigApplicationContext applicationContext;
 
     @Test
     void legacyCodeCanUseSpringBeansIfRefreshed() {
@@ -22,15 +25,21 @@ public class IntegrationTest {
         assertThat(legacyCode.canUseSpring(), is(true));
     }
 
-    @BeforeAll
-    static void createSpringContext() {
+    @Test
+    void legacySingletonsAreRegistered() {
+        applicationContext.refresh();
+        assertThat(applicationContext.getBean(LegacySingletonByField.class), notNullValue());
+        assertThat(applicationContext.getBean(LegacySingletonByMethod.class), notNullValue());
+    }
+
+    @BeforeEach
+    void createSpringContext() {
         applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.register(SpringConfig.class);
     }
 
-    @AfterAll
-    static void closeSpringContext() {
+    @AfterEach
+    void closeSpringContext() {
         applicationContext.close();
-        applicationContext = null;
     }
 }
