@@ -8,12 +8,14 @@ import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
-public class LegacySingletonMethodFilterTest {
+public class LegacyBeanMethodFilterTest {
 
     private static final MetadataReaderFactory EXAMPLE_FACTORY = new SimpleMetadataReaderFactory();
 
-    private LegacySingletonMethodFilter tested = new LegacySingletonMethodFilter();
+    private LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(false);
 
     @Test
     public void singletonWithStaticMethodMatches() {
@@ -27,6 +29,19 @@ public class LegacySingletonMethodFilterTest {
 
         tested.customize(actual);
 
+        assertThat(actual.getScope(), is(SCOPE_SINGLETON));
+        assertThat(actual.isLazyInit(), is(true));
+        assertThat(actual.getFactoryMethodName(), is("getInstance"));
+    }
+
+    @Test
+    public void beanDefinitionOfPrototypeWithStaticMethodWillGetTheFactoryMethodOnCustomize() {
+        RootBeanDefinition actual = new RootBeanDefinition(LegacySingletonByMethod.class);
+
+        new LegacyBeanMethodFilter(true).customize(actual);
+
+        assertThat(actual.getScope(), is(SCOPE_PROTOTYPE));
+        assertThat(actual.isLazyInit(), is(false));
         assertThat(actual.getFactoryMethodName(), is("getInstance"));
     }
 

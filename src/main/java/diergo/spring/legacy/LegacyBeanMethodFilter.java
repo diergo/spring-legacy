@@ -9,12 +9,16 @@ import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.isPrivate;
 import static java.lang.reflect.Modifier.isStatic;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
-class LegacySingletonMethodFilter extends CustomizingTypeFilter<Method> {
+class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
 
+    private final boolean prototype;
     private final String[] methodNames;
 
-    LegacySingletonMethodFilter(String... methodNames) {
+    LegacyBeanMethodFilter(boolean prototype, String... methodNames) {
+        this.prototype = prototype;
         this.methodNames = methodNames;
     }
 
@@ -28,6 +32,12 @@ class LegacySingletonMethodFilter extends CustomizingTypeFilter<Method> {
 
     @Override
     protected void customizeBeanDefinition(Method access, BeanDefinition bd) {
+        if (prototype) {
+            bd.setScope(SCOPE_PROTOTYPE);
+        } else {
+            bd.setScope(SCOPE_SINGLETON);
+            bd.setLazyInit(true);
+        }
         bd.setFactoryMethodName(access.getName());
     }
 

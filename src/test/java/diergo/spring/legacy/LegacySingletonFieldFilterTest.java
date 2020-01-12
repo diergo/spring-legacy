@@ -10,6 +10,7 @@ import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 public class LegacySingletonFieldFilterTest {
 
@@ -29,6 +30,8 @@ public class LegacySingletonFieldFilterTest {
 
         tested.customize(actual);
 
+        assertThat(actual.getScope(), is(SCOPE_SINGLETON));
+        assertThat(actual.isLazyInit(), is(true));
         assertThat(actual.getInstanceSupplier().get(), isA(LegacySingletonByField.class));
     }
 
@@ -38,6 +41,8 @@ public class LegacySingletonFieldFilterTest {
 
         tested.customize(actual);
 
+        assertThat(actual.getScope(), is(SCOPE_SINGLETON));
+        assertThat(actual.isLazyInit(), is(true));
         assertThat(actual.getInstanceSupplier().get(), isA(LegacySingletonByField.class));
     }
 

@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.isPrivate;
 import static java.lang.reflect.Modifier.isStatic;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 
@@ -30,6 +31,8 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 
     @Override
     protected void customizeBeanDefinition(Field access, BeanDefinition bd) {
+        bd.setScope(SCOPE_SINGLETON);
+        bd.setLazyInit(true);
         if (bd instanceof AbstractBeanDefinition) {
             AbstractBeanDefinition adb = (AbstractBeanDefinition) bd;
             adb.setInstanceSupplier(() -> {

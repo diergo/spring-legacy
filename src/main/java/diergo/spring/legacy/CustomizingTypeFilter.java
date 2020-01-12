@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
- * @see LegacySingletonsRegistryPostProcessor
+ * @see LegacyBeanRegistryPostProcessor
  */
 abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCustomizer {
 

@@ -15,10 +15,12 @@ import java.util.List;
 
 /**
  * A post processor registering all legacy singletons as spring beans.
- * It will check the {@linkplain #scanForSingletons(String...) basePackages} for any types with static
- * {@linkplain Builder#fromStaticMethods(String...) methods} or {@linkplain Builder#fromStaticFields(String...) fields}.
+ * It will check the {@linkplain #scanForSingletons(String...) basePackages} for any types with static methods as
+ * {@linkplain Builder#singletonsFromStaticMethods(String...) singletons},
+ * {@linkplain Builder#prototypesFromStaticMethods(String...)} prototypes}
+ * or {@linkplain Builder#singletonsFromStaticFields(String...) fields as singletons}.
  */
-public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostProcessor {
+public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcessor {
 
     /**
      * Build a post processor scanning the base packages passed.
@@ -34,7 +36,7 @@ public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostP
 
     private final Builder builder;
 
-    private LegacySingletonsRegistryPostProcessor(Builder builder) {
+    private LegacyBeanRegistryPostProcessor(Builder builder) {
         this.builder = builder;
         setOrder(builder.order);
     }
@@ -43,9 +45,6 @@ public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostP
     protected void postProcess(BeanDefinitionRegistry registry) {
         ClassPathBeanDefinitionScanner scanner = new LegacyClassPathBeanDefinitionScanner(registry, false, environment,
                 this::customizeBeanDefinition);
-        BeanDefinitionDefaults defaults = new BeanDefinitionDefaults();
-        defaults.setLazyInit(true);
-        scanner.setBeanDefinitionDefaults(defaults);
         scanner.setBeanNameGenerator(builder.beanNameGenerator);
         builder.included.forEach(scanner::addIncludeFilter);
         scanner.scan(builder.basePackages);
@@ -93,7 +92,7 @@ public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostP
          * Include singletons defined by non private static final fields of the declaring type.
          * Field names may be used to restrict the recognized fields.
          */
-        public Builder fromStaticFields(String... fieldNames) {
+        public Builder singletonsFromStaticFields(String... fieldNames) {
             included.add(new LegacySingletonFieldFilter(fieldNames));
             return this;
         }
@@ -102,24 +101,33 @@ public class LegacySingletonsRegistryPostProcessor extends AbstractRegistryPostP
          * Include singletons defined by non private static final getters of the declaring type.
          * Method names may be used to restrict the recognized methods.
          */
-        public Builder fromStaticMethods(String... methodNames) {
-            included.add(new LegacySingletonMethodFilter(methodNames));
+        public Builder singletonsFromStaticMethods(String... methodNames) {
+            included.add(new LegacyBeanMethodFilter(false, methodNames));
+            return this;
+        }
+
+        /**
+         * Include prototypes defined by non private static final getters of the declaring type.
+         * Method names may be used to restrict the recognized methods.
+         */
+        public Builder prototypesFromStaticMethods(String... methodNames) {
+            included.add(new LegacyBeanMethodFilter(true, methodNames));
             return this;
         }
 
         /**
          * Create the post processor as configured by the builder.
-         * If neither {@link #fromStaticFields(String...)} nor {@link #fromStaticMethods(String...)} has been called
+         * If neither {@link #singletonsFromStaticFields(String...)} nor {@link #singletonsFromStaticMethods(String...)} has been called
          * any static methods and fields will be recognized.
          *
          * @see BeanDefinitionRegistryPostProcessor
          */
-        public LegacySingletonsRegistryPostProcessor asPostProcessor() {
+        public LegacyBeanRegistryPostProcessor asPostProcessor() {
             if (included.isEmpty()) {
-                fromStaticMethods();
-                fromStaticFields();
+                singletonsFromStaticMethods();
+                singletonsFromStaticFields();
             }
-            return new LegacySingletonsRegistryPostProcessor(this);
+            return new LegacyBeanRegistryPostProcessor(this);
         }
     }
 

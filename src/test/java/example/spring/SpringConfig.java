@@ -1,13 +1,13 @@
 package example.spring;
 
-import diergo.spring.legacy.LegacySingletonsRegistryPostProcessor;
+import diergo.spring.legacy.LegacyBeanRegistryPostProcessor;
 import diergo.spring.legacy.LegacySpringAccess;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import static diergo.spring.legacy.LegacySingletonsRegistryPostProcessor.scanForSingletons;
+import static diergo.spring.legacy.LegacyBeanRegistryPostProcessor.scanForSingletons;
 
 @Configuration
 @ComponentScan
@@ -15,7 +15,7 @@ import static diergo.spring.legacy.LegacySingletonsRegistryPostProcessor.scanFor
 public class SpringConfig {
 
     @Bean
-    static LegacySingletonsRegistryPostProcessor legacySingletons() {
+    static LegacyBeanRegistryPostProcessor legacySingletons() {
         return scanForSingletons("example")
                 .asPostProcessor();
     }
