@@ -12,6 +12,7 @@ import org.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A post processor registering all legacy singletons as spring beans.
@@ -98,6 +99,15 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
         }
 
         /**
+         * Include singletons defined by non private static final fields of the declaring type.
+         * Field names may be used to restrict the recognized pattern.
+         */
+        public Builder singletonsFromStaticFields(Pattern fieldName) {
+            included.add(new LegacySingletonFieldFilter(fieldName));
+            return this;
+        }
+
+        /**
          * Include singletons defined by non private static final getters of the declaring type.
          * Method names may be used to restrict the recognized methods.
          */
@@ -107,11 +117,29 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
         }
 
         /**
+         * Include singletons defined by non private static final getters of the declaring type.
+         * Method names may be used to restrict the recognized pattern.
+         */
+        public Builder singletonsFromStaticMethods(Pattern methodName) {
+            included.add(new LegacyBeanMethodFilter(false, methodName));
+            return this;
+        }
+
+        /**
          * Include prototypes defined by non private static final getters of the declaring type.
          * Method names may be used to restrict the recognized methods.
          */
         public Builder prototypesFromStaticMethods(String... methodNames) {
             included.add(new LegacyBeanMethodFilter(true, methodNames));
+            return this;
+        }
+
+        /**
+         * Include prototypes defined by non private static final getters of the declaring type.
+         * Method names may be used to restrict the recognized pattern.
+         */
+        public Builder prototypesFromStaticMethods(Pattern methodName) {
+            included.add(new LegacyBeanMethodFilter(true, methodName));
             return this;
         }
 

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.springframework.core.env.StandardEnvironment;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
@@ -87,7 +88,7 @@ public class LegacyBeanRegistryPostProcessorTest {
     void createProcessor() {
         tested = LegacyBeanRegistryPostProcessor.scanForSingletons("example")
                 .beanNaming(new AnnotationBeanNameGenerator())
-                .singletonsFromStaticFields()
+                .singletonsFromStaticFields(Pattern.compile("[A-Z0-9_]+"))
                 .singletonsFromStaticMethods("getInstance")
                 .prototypesFromStaticMethods("createInstance")
                 .asPostProcessor();

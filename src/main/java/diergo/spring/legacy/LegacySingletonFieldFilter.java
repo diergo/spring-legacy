@@ -7,6 +7,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.isPrivate;
@@ -16,9 +17,16 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 
     private final String[] fieldNames;
+    private final Pattern fieldName;
 
     LegacySingletonFieldFilter(String... fieldNames) {
         this.fieldNames = fieldNames;
+        fieldName = null;
+    }
+
+    LegacySingletonFieldFilter(Pattern fieldName) {
+        this.fieldNames = new String[0];
+        this.fieldName = fieldName;
     }
 
     @Override
@@ -26,6 +34,7 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
         return Stream.of(type.getDeclaredFields())
                 .filter(field -> isStaticSingletonField(field, type))
                 .filter(field -> fieldNames.length == 0 || Arrays.asList(fieldNames).contains(field.getName()))
+                .filter(method -> fieldName == null || fieldName.matcher(method.getName()).matches())
                 .findFirst();
     }
 
