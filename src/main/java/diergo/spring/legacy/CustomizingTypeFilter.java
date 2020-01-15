@@ -6,13 +6,28 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
  * @see LegacyBeanRegistryPostProcessor
  */
 abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCustomizer {
+
+    private final Pattern namePattern;
+    private final String[] names;
+
+    CustomizingTypeFilter(String... names) {
+        this.names = names;
+        namePattern = null;
+    }
+
+    CustomizingTypeFilter(Pattern namePattern) {
+        this.names = new String[0];
+        this.namePattern = namePattern;
+    }
 
     @Override
     public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
@@ -38,7 +53,12 @@ abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCus
 
     protected abstract void customizeBeanDefinition(T access, BeanDefinition bd);
 
-    private Optional<Class<?>> getType(String className) {
+    protected boolean nameMatch(String name) {
+        return Arrays.asList(names).contains(name) ||
+                (namePattern != null && namePattern.matcher(name).matches());
+    }
+
+    protected Optional<Class<?>> getType(String className) {
         try {
             return Optional.of(Class.forName(className, false, getClass().getClassLoader()));
         } catch (ClassNotFoundException | LinkageError e) {

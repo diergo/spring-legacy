@@ -3,7 +3,6 @@ package diergo.spring.legacy;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -16,27 +15,22 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
 
     private final boolean prototype;
-    private final Pattern methodName;
-    private final String[] methodNames;
 
     LegacyBeanMethodFilter(boolean prototype, String... methodNames) {
+        super(methodNames);
         this.prototype = prototype;
-        this.methodNames = methodNames;
-        methodName = null;
     }
 
-    LegacyBeanMethodFilter(boolean prototype, Pattern methodName) {
+    LegacyBeanMethodFilter(boolean prototype, Pattern methodNamePattern) {
+        super(methodNamePattern);
         this.prototype = prototype;
-        this.methodNames = new String[0];
-        this.methodName = methodName;
     }
 
     @Override
     protected Optional<Method> getSingletonAccess(Class<?> type) {
         return Stream.of(type.getDeclaredMethods())
                 .filter(method -> isStaticSingletonMethod(method, type))
-                .filter(method -> methodNames.length == 0 || Arrays.asList(methodNames).contains(method.getName()))
-                .filter(method -> methodName == null || methodName.matcher(method.getName()).matches())
+                .filter(method -> nameMatch(method.getName()))
                 .findFirst();
     }
 
