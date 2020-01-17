@@ -54,8 +54,8 @@ abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCus
     protected abstract void customizeBeanDefinition(T access, BeanDefinition bd);
 
     protected boolean nameMatch(String name) {
-        return Arrays.asList(names).contains(name) ||
-                (namePattern != null && namePattern.matcher(name).matches());
+        return (names.length == 0 || Arrays.asList(names).contains(name)) &&
+                (namePattern == null || namePattern.matcher(name).matches());
     }
 
     static Optional<Class<?>> getType(String className) {
