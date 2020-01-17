@@ -24,7 +24,7 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
     }
 
     @Override
-    protected Optional<Field> getSingletonAccess(Class<?> type) {
+    protected Optional<Field> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredFields())
                 .filter(field -> isStaticSingletonField(field, type))
                 .filter(field -> nameMatch(field.getName()))

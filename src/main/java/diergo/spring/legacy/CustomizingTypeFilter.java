@@ -32,24 +32,24 @@ abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCus
     @Override
     public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
         return getType(metadataReader.getClassMetadata().getClassName())
-                .flatMap(this::getSingletonAccess)
+                .flatMap(this::getAccess)
                 .isPresent();
     }
 
     public boolean match(BeanDefinition bd) {
         return getType(bd.getBeanClassName())
-                .flatMap(this::getSingletonAccess)
+                .flatMap(this::getAccess)
                 .isPresent();
     }
 
     @Override
     public void customize(BeanDefinition bd) {
         getType(bd.getBeanClassName())
-                .flatMap(this::getSingletonAccess)
+                .flatMap(this::getAccess)
                 .ifPresent(access -> customizeBeanDefinition(access, bd));
     }
 
-    protected abstract Optional<T> getSingletonAccess(Class<?> type);
+    protected abstract Optional<T> getAccess(Class<?> type);
 
     protected abstract void customizeBeanDefinition(T access, BeanDefinition bd);
 
@@ -58,9 +58,9 @@ abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCus
                 (namePattern != null && namePattern.matcher(name).matches());
     }
 
-    protected Optional<Class<?>> getType(String className) {
+    static Optional<Class<?>> getType(String className) {
         try {
-            return Optional.of(Class.forName(className, false, getClass().getClassLoader()));
+            return Optional.of(Class.forName(className, false, CustomizingTypeFilter.class.getClassLoader()));
         } catch (ClassNotFoundException | LinkageError e) {
             return Optional.empty();
         }

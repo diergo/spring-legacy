@@ -27,7 +27,7 @@ class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
     }
 
     @Override
-    protected Optional<Method> getSingletonAccess(Class<?> type) {
+    protected Optional<Method> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredMethods())
                 .filter(method -> isStaticSingletonMethod(method, type))
                 .filter(method -> nameMatch(method.getName()))
