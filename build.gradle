@@ -19,13 +19,14 @@ repositories {
 }
 
 dependencies {
-    api "org.springframework:spring-context:${versions.spring.replaceAll('[0-9]+\\.RELEASE','0.RELEASE')}"
+    api "org.springframework:spring-context:${versions.spring.replaceAll('[0-9]+\\.RELEASE', '0.RELEASE')}"
     implementation "org.springframework:spring-context:${versions.spring}"
     compileOnly "com.github.spotbugs:spotbugs-annotations:${versions.spotbugs}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
-            'org.hamcrest:hamcrest-library:2.1'
+            'org.hamcrest:hamcrest-library:2.1',
+            'org.mockito:mockito-junit-jupiter:3.2.4'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
 }
 

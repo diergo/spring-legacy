@@ -7,8 +7,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 
-import java.util.regex.Pattern;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
@@ -20,39 +18,31 @@ public class LegacyBeanMethodFilterTest {
 
     @Test
     public void singletonWithAnyStaticMethodMatches() {
-        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(false);
+        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(SCOPE_SINGLETON, method -> true);
         assertThat(matchTypeFilter(LegacySingletonByMethod.class, tested), is(true));
         assertThat(matchBeanDefinition(LegacySingletonByMethod.class, tested), is(true));
     }
 
     @Test
     public void prototypeWithAnyStaticMethodMatches() {
-        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(true);
+        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, method -> true);
         assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, tested), is(true));
         assertThat(matchBeanDefinition(LegacyPrototypeByStaticMethod.class, tested), is(true));
     }
 
     @Test
-    public void prototypeWithNamedStaticMethodMatches() {
-        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(true,
-                "createInstance")), is(true));
-        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(true,
-                "getInstance")), is(false));
-    }
-
-    @Test
-    public void prototypeWithRegExpStaticMethodMatches() {
-        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(true,
-                Pattern.compile("[a-z]+Instance"))), is(true));
-        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(true,
-                Pattern.compile("get.*"))), is(false));
+    public void prototypeWithSuccessfulCheckMatches() {
+        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(SCOPE_PROTOTYPE,
+                method -> method.getName().equals("createInstance"))), is(true));
+        assertThat(matchTypeFilter(LegacyPrototypeByStaticMethod.class, new LegacyBeanMethodFilter(SCOPE_PROTOTYPE,
+                method -> method.getName().equals("getInstance"))), is(false));
     }
 
     @Test
     public void beanDefinitionOfSingletonWithStaticMethodWillGetTheFactoryMethodOnCustomize() {
         RootBeanDefinition actual = new RootBeanDefinition(LegacySingletonByMethod.class);
 
-        new LegacyBeanMethodFilter(false).customize(actual);
+        new LegacyBeanMethodFilter(SCOPE_SINGLETON, method -> true).customize(actual);
 
         assertThat(actual.getScope(), is(SCOPE_SINGLETON));
         assertThat(actual.isLazyInit(), is(true));
@@ -63,7 +53,7 @@ public class LegacyBeanMethodFilterTest {
     public void beanDefinitionOfPrototypeWithStaticMethodWillGetTheFactoryMethodOnCustomize() {
         RootBeanDefinition actual = new RootBeanDefinition(LegacySingletonByMethod.class);
 
-        new LegacyBeanMethodFilter(true).customize(actual);
+        new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, method -> true).customize(actual);
 
         assertThat(actual.getScope(), is(SCOPE_PROTOTYPE));
         assertThat(actual.isLazyInit(), is(false));
@@ -72,7 +62,7 @@ public class LegacyBeanMethodFilterTest {
 
     @Test
     public void missingStaticMethodDoesNotMatch() {
-        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(false);
+        LegacyBeanMethodFilter tested = new LegacyBeanMethodFilter(SCOPE_SINGLETON, method -> true);
         assertThat(matchTypeFilter(NonSingletonBean.class, tested), is(false));
         assertThat(matchBeanDefinition(NonSingletonBean.class, tested), is(false));
     }

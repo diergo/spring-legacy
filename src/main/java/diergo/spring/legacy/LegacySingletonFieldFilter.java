@@ -6,7 +6,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.isPrivate;
@@ -15,19 +15,15 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 
-    LegacySingletonFieldFilter(String... fieldNames) {
-        super(fieldNames);
-    }
-
-    LegacySingletonFieldFilter(Pattern fieldNamePattern) {
-        super(fieldNamePattern);
+    LegacySingletonFieldFilter(Predicate<? super Field> accessCheck) {
+        super(accessCheck);
     }
 
     @Override
     protected Optional<Field> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredFields())
                 .filter(field -> isStaticSingletonField(field, type))
-                .filter(field -> nameMatch(field.getName()))
+                .filter(accessCheck::test)
                 .findFirst();
     }
 

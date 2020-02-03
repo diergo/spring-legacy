@@ -4,42 +4,34 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.lang.reflect.Modifier.isPrivate;
 import static java.lang.reflect.Modifier.isStatic;
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
 
-    private final boolean prototype;
+    private final String scope;
 
-    LegacyBeanMethodFilter(boolean prototype, String... methodNames) {
-        super(methodNames);
-        this.prototype = prototype;
-    }
-
-    LegacyBeanMethodFilter(boolean prototype, Pattern methodNamePattern) {
-        super(methodNamePattern);
-        this.prototype = prototype;
+    LegacyBeanMethodFilter(String scope, Predicate<? super Method> accessCheck) {
+        super(accessCheck);
+        this.scope = scope;
     }
 
     @Override
     protected Optional<Method> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredMethods())
                 .filter(method -> isStaticSingletonMethod(method, type))
-                .filter(method -> nameMatch(method.getName()))
+                .filter(accessCheck::test)
                 .findFirst();
     }
 
     @Override
     protected void customizeBeanDefinition(Method access, BeanDefinition bd) {
-        if (prototype) {
-            bd.setScope(SCOPE_PROTOTYPE);
-        } else {
-            bd.setScope(SCOPE_SINGLETON);
+        bd.setScope(scope);
+        if (SCOPE_SINGLETON.equals(scope)) {
             bd.setLazyInit(true);
         }
         bd.setFactoryMethodName(access.getName());

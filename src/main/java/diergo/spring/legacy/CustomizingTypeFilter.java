@@ -6,27 +6,21 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
-import java.util.Arrays;
+import java.lang.reflect.Member;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
+ *
  * @see LegacyBeanRegistryPostProcessor
  */
-abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCustomizer {
+abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, BeanDefinitionCustomizer {
 
-    private final Pattern namePattern;
-    private final String[] names;
+    protected final Predicate<? super T> accessCheck;
 
-    CustomizingTypeFilter(String... names) {
-        this.names = names;
-        namePattern = null;
-    }
-
-    CustomizingTypeFilter(Pattern namePattern) {
-        this.names = new String[0];
-        this.namePattern = namePattern;
+    CustomizingTypeFilter(Predicate<? super T> accessCheck) {
+        this.accessCheck = accessCheck;
     }
 
     @Override
@@ -52,11 +46,6 @@ abstract class CustomizingTypeFilter<T> implements TypeFilter, BeanDefinitionCus
     protected abstract Optional<T> getAccess(Class<?> type);
 
     protected abstract void customizeBeanDefinition(T access, BeanDefinition bd);
-
-    protected boolean nameMatch(String name) {
-        return (names.length == 0 || Arrays.asList(names).contains(name)) &&
-                (namePattern == null || namePattern.matcher(name).matches());
-    }
 
     static Optional<Class<?>> getType(String className) {
         try {

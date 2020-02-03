@@ -7,7 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import static diergo.spring.legacy.LegacyBeanRegistryPostProcessor.scanForSingletons;
+import java.util.regex.Pattern;
+
+import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.legacyPackages;
+import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.named;
 
 @Configuration
 @ComponentScan
@@ -16,7 +19,10 @@ public class SpringConfig {
 
     @Bean
     static LegacyBeanRegistryPostProcessor legacySingletons() {
-        return scanForSingletons("example")
-                .asPostProcessor();
+        return legacyPackages("example")
+                .singletonsFrom().fields(named("INSTANCE"))
+                .singletonsFrom().methods(named("getInstance"))
+                .prototypesFrom().methods(named(Pattern.compile("create[A-Z].*")))
+                .build();
     }
 }
