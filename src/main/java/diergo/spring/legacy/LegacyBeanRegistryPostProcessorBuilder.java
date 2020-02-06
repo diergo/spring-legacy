@@ -1,5 +1,6 @@
 package diergo.spring.legacy;
 
+import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -12,8 +13,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
@@ -38,6 +42,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
     private final String[] basePackages;
     private final List<CustomizingTypeFilter<?>> included = new ArrayList<>();
+    private final List<Function<BeanDefinitionRegistry, Stream<BeanDefinition>>> factories = new ArrayList<>();
     private BeanNameGenerator beanNameGenerator = BeanDefinitionReaderUtils::generateBeanName;
     private int order = Ordered.LOWEST_PRECEDENCE;
 
@@ -73,6 +78,15 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         return new PrototypeBuilder();
     }
 
+    public FactoryBuilder factory(String type) {
+        return new FactoryBuilder(() -> CustomizingTypeFilter.getType(type)
+                .orElseThrow(() -> new FatalBeanException("Cannot inspect bean type " + type)));
+    }
+
+    public FactoryBuilder factory(Class<?> type) {
+        return new FactoryBuilder(() -> type);
+    }
+
     /**
      * Create the post processor as configured by the builder.
      * If neither {@link #singletonsFrom()} nor {@link #prototypesFrom()} has been called
@@ -85,7 +99,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
             included.add(new LegacyBeanMethodFilter(SCOPE_SINGLETON, anyGetter()));
             included.add(new LegacySingletonFieldFilter(andConstant()));
         }
-        return new LegacyBeanRegistryPostProcessor(included, beanNameGenerator, order, basePackages);
+        return new LegacyBeanRegistryPostProcessor(included, factories, beanNameGenerator, order, basePackages);
     }
 
     public abstract class Builder {
@@ -111,6 +125,28 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> memberCheck) {
             return addIncluded(new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, memberCheck));
+        }
+    }
+
+    public class FactoryBuilder {
+
+        private final Supplier<Class<?>> type;
+
+        private FactoryBuilder(Supplier<Class<?>> type) {
+            this.type = type;
+        }
+
+        public LegacyBeanRegistryPostProcessorBuilder singletons(Predicate<? super Method> methodCheck) {
+            return addFactory(new LegacyFactoryBeanScanner(type, methodCheck, SCOPE_SINGLETON));
+        }
+
+        public LegacyBeanRegistryPostProcessorBuilder prototypes(Predicate<? super Method> methodCheck) {
+            return addFactory(new LegacyFactoryBeanScanner(type, methodCheck, SCOPE_PROTOTYPE));
+        }
+
+        private LegacyBeanRegistryPostProcessorBuilder addFactory(Function<BeanDefinitionRegistry, Stream<BeanDefinition>> factory) {
+            factories.add(factory);
+            return LegacyBeanRegistryPostProcessorBuilder.this;
         }
     }
 

@@ -2,6 +2,7 @@ package example.spring;
 
 import diergo.spring.legacy.LegacyBeanRegistryPostProcessor;
 import diergo.spring.legacy.LegacySpringAccess;
+import example.legacy.LegacyFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,9 @@ public class SpringConfig {
         return legacyPackages("example")
                 .singletonsFrom().fields(named("INSTANCE"))
                 .singletonsFrom().methods(named("getInstance"))
-                .prototypesFrom().methods(named(Pattern.compile("create[A-Z].*")))
+                .prototypesFrom().methods(method -> method.getName().startsWith("create"))
+                .factory(LegacyFactoryBean.class).singletons(method -> method.getName().startsWith("get"))
+                .factory(LegacyFactoryBean.class).prototypes(method -> method.getName().startsWith("create"))
                 .build();
     }
 }

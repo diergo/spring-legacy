@@ -22,6 +22,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 
 import java.lang.reflect.Member;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -39,6 +40,8 @@ public class LegacyBeanRegistryPostProcessorTest {
     private LegacyBeanRegistryPostProcessor tested;
     @Mock
     private CustomizingTypeFilter<Member> filter;
+    @Mock
+    private Function<BeanDefinitionRegistry, Stream<BeanDefinition>> factory;
 
     @Test
     public void beansForSingletonsAreRegisteredOnPostProcessBeanDefinitionRegistry() {
@@ -90,7 +93,7 @@ public class LegacyBeanRegistryPostProcessorTest {
 
     @BeforeEach
     void createProcessor() {
-        tested = new LegacyBeanRegistryPostProcessor(singletonList(filter),
+        tested = new LegacyBeanRegistryPostProcessor(singletonList(filter), singletonList(factory),
                 new AnnotationBeanNameGenerator(), Ordered.LOWEST_PRECEDENCE, "example");
         tested.setEnvironment(new StandardEnvironment());
         when(filter.match(any(MetadataReader.class), any(MetadataReaderFactory.class)))

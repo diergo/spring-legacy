@@ -3,7 +3,9 @@ package diergo.spring.legacy;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -11,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A post processor registering all legacy singletons as spring beans.
@@ -21,9 +25,11 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
 
     private final String[] basePackages;
     private final List<CustomizingTypeFilter<?>> included;
+    private final List<Function<BeanDefinitionRegistry, Stream<BeanDefinition>>> factories;
     private final BeanNameGenerator beanNameGenerator;
 
-    public LegacyBeanRegistryPostProcessor(List<CustomizingTypeFilter<?>> included, BeanNameGenerator beanNameGenerator, int order, String... basePackages) {
+    public LegacyBeanRegistryPostProcessor(List<CustomizingTypeFilter<?>> included, List<Function<BeanDefinitionRegistry, Stream<BeanDefinition>>> factories, BeanNameGenerator beanNameGenerator, int order, String... basePackages) {
+        this.factories = factories;
         super.setOrder(order);
         this.basePackages = basePackages;
         this.included = included;
@@ -38,6 +44,11 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
         scanner.setBeanNameGenerator(beanNameGenerator);
         included.forEach(scanner::addIncludeFilter);
         scanner.scan(basePackages);
+        factories.stream()
+                .flatMap(factory -> factory.apply(registry))
+                .map(bd -> new BeanDefinitionHolder(bd, beanNameGenerator.generateBeanName(bd, registry)))
+                .filter(bdh -> !registry.containsBeanDefinition(bdh.getBeanName()))
+                .forEach(bdh -> BeanDefinitionReaderUtils.registerBeanDefinition(bdh, registry));
     }
 
     private void customizeBeanDefinition(BeanDefinition bd) {
