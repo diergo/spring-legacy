@@ -21,7 +21,7 @@ configuration including the `LegacySpringAccess` which can be easily
 ### Using legacy singletons with Spring
 
 Instead of directly access legacy singletons from new code, you should use DI as provided by Spring. To support this,
-[register all singletons](src/main/java/diergo/spring/legacy/LegacySingletonsRegistryPostProcessor.java) from legacy
+[register all singletons](src/main/java/diergo/spring/legacy/LegacyBeanRegistryPostProcessorBuilder.java) from legacy
 code as Spring beans. The post processor is configured using a
 [static bean method in your config](src/test/java/example/spring/SpringConfig.java).
 Have a look into the [example](src/test/java/example/spring/SpringBeanInjectedLegacy.java) and how it is used in the
