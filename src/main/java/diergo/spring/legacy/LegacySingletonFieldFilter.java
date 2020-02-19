@@ -23,7 +23,7 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
     protected Optional<Field> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredFields())
                 .filter(field -> isStaticSingletonField(field, type))
-                .filter(accessCheck::test)
+                .filter(accessCheck)
                 .findFirst();
     }
 
