@@ -42,7 +42,8 @@ javadoc {
     options.memberLevel = 'PROTECTED'
     options.author = false
     options.header = project.name
-    options.links(["http://docs.oracle.com/javase/8/docs/api/"] as String[])
+    options.links(["https://docs.oracle.com/javase/8/docs/api/",
+                   "https://docs.spring.io/spring-framework/docs/${versions.spring}/javadoc-api/"] as String[])
     options.encoding = 'UTF-8'
     options.addStringOption('Xdoclint:none', '-quiet')
 }
