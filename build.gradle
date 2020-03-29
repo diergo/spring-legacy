@@ -70,6 +70,7 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 javadoc {
     options.memberLevel = 'PROTECTED'
     options.author = false
+    options.source = '1.8'
     options.header = project.name
     options.links(["https://docs.oracle.com/javase/8/docs/api/",
                    "https://docs.spring.io/spring-framework/docs/${versions.spring}/javadoc-api/"] as String[])
