@@ -107,7 +107,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
     public LegacyBeanRegistryPostProcessor build() {
         if (included.isEmpty()) {
             included.add(new LegacyBeanMethodFilter(SCOPE_SINGLETON, anyGetter()));
-            included.add(new LegacySingletonFieldFilter(andConstant()));
+            included.add(new LegacySingletonFieldFilter(anyConstant()));
         }
         return new LegacyBeanRegistryPostProcessor(included, factories, beanNameGenerator, order, basePackages);
     }
@@ -188,7 +188,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         return field -> GETTERS.matcher(field.getName()).matches();
     }
 
-    public static Predicate<Field> andConstant() {
+    public static Predicate<Field> anyConstant() {
         return field -> CONSTANTS.matcher(field.getName()).matches();
     }
 }
