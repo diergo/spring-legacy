@@ -1,4 +1,4 @@
-Spring Legacy ![CI status](https://travis-ci.org/aburmeis/spring-legacy.svg)
+Spring Legacy [![CI status](https://travis-ci.org/aburmeis/spring-legacy.svg)](https://travis-ci.org/aburmeis/spring-legacy/)
 =============
 
 When migrating a legacy project to dependency injection based on Spring you often need dependencies to be injected
