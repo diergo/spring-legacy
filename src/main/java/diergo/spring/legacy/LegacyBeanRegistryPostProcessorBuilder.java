@@ -88,11 +88,18 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         return new PrototypeBuilder();
     }
 
+    /**
+     * Start to configure a factory bean.
+     * @param type the fully qualified name of the factory bean type
+     */
     public FactoryBuilder factory(String type) {
         return new FactoryBuilder(() -> CustomizingTypeFilter.getType(type)
                 .orElseThrow(() -> new FatalBeanException("Cannot inspect bean type " + type)));
     }
 
+    /**
+     * Start to configure a factory bean.
+     */
     public FactoryBuilder factory(Class<?> type) {
         return new FactoryBuilder(() -> type);
     }
@@ -120,6 +127,9 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         }
     }
 
+    /**
+     * Configures singleton bean registrations.
+     */
     public class SingletonBuilder extends Builder {
 
         /**
@@ -139,17 +149,24 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         }
     }
 
+    /**
+     * Configures prototype bean registrations.
+     */
     public class PrototypeBuilder extends Builder {
 
         /**
          * Register prototypes beans from static methods.
-         * @param memberCheck the additional check methods have to fulfill to be included
+         * @param methodCheck the additional check methods have to fulfill to be included
          */
-        public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> memberCheck) {
-            return addIncluded(new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, memberCheck));
+        public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> methodCheck) {
+            return addIncluded(new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, methodCheck));
         }
     }
 
+    /**
+     * Configures bean registrations using a factory bean.
+     * The factory bean has to be registered before as a bean!
+     */
     public class FactoryBuilder {
 
         private final Supplier<Class<?>> type;
@@ -158,10 +175,18 @@ public class LegacyBeanRegistryPostProcessorBuilder {
             this.type = type;
         }
 
+        /**
+         * Register singleton beans from factory bean methods.
+         * @param methodCheck the additional check methods have to fulfill to be included
+         */
         public LegacyBeanRegistryPostProcessorBuilder singletons(Predicate<? super Method> methodCheck) {
             return addFactory(new LegacyFactoryBeanScanner(type, methodCheck, SCOPE_SINGLETON));
         }
 
+        /**
+         * Register prototypes beans from factory bean methods.
+         * @param methodCheck the additional check methods have to fulfill to be included
+         */
         public LegacyBeanRegistryPostProcessorBuilder prototypes(Predicate<? super Method> methodCheck) {
             return addFactory(new LegacyFactoryBeanScanner(type, methodCheck, SCOPE_PROTOTYPE));
         }
