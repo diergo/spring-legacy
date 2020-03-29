@@ -1,14 +1,14 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'com.github.spotbugs' version '3.0.0'
+    id 'com.github.spotbugs' version '4.0.5'
 }
 
 ext {
     versions = [:]
-    versions.spring = '5.1.12.RELEASE'
-    versions.junit = '5.5.1'
-    versions.spotbugs = '3.1.12'
+    versions.spring = '5.1.14.RELEASE'
+    versions.junit = '5.6.1'
+    versions.spotbugs = '4.0.1'
 }
 
 sourceCompatibility = 1.8
@@ -25,8 +25,8 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
-            'org.hamcrest:hamcrest-library:2.1',
-            'org.mockito:mockito-junit-jupiter:3.2.4'
+            'org.hamcrest:hamcrest-library:2.2',
+            'org.mockito:mockito-junit-jupiter:3.3.3'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
 }
 
