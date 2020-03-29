@@ -23,13 +23,17 @@ import static java.util.Arrays.asList;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 
+/**
+ * Builder to configure a post processor registering beans from legacy code.
+ * @see LegacyBeanRegistryPostProcessor
+ */
 public class LegacyBeanRegistryPostProcessorBuilder {
 
     private static final Pattern GETTERS = Pattern.compile("get[A-Z].+");
     private static final Pattern CONSTANTS = Pattern.compile("[A-Z][A-Z0-9_]+");
 
     /**
-     * Build a post processor scanning the base packages passed.
+     * Build a new post processor scanning the base packages passed.
      * If no packages are passed, the package of the caller is used.
      */
     public static LegacyBeanRegistryPostProcessorBuilder legacyPackages(String... basePackages) {
@@ -70,10 +74,16 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         return this;
     }
 
+    /**
+     * Start to configure singleton bean registration.
+     */
     public SingletonBuilder singletonsFrom() {
         return new SingletonBuilder();
     }
 
+    /**
+     * Start to configure prototype bean registration.
+     */
     public PrototypeBuilder prototypesFrom() {
         return new PrototypeBuilder();
     }
@@ -102,9 +112,9 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         return new LegacyBeanRegistryPostProcessor(included, factories, beanNameGenerator, order, basePackages);
     }
 
-    public abstract class Builder {
+    private abstract class Builder {
 
-        protected LegacyBeanRegistryPostProcessorBuilder addIncluded(CustomizingTypeFilter<?> filter) {
+        LegacyBeanRegistryPostProcessorBuilder addIncluded(CustomizingTypeFilter<?> filter) {
             LegacyBeanRegistryPostProcessorBuilder.this.included.add(filter);
             return LegacyBeanRegistryPostProcessorBuilder.this;
         }
@@ -112,10 +122,18 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
     public class SingletonBuilder extends Builder {
 
+        /**
+         * Register singleton beans from static fields.
+         * @param fieldCheck the additional check fields have to fulfill to be included
+         */
         public LegacyBeanRegistryPostProcessorBuilder fields(Predicate<? super Field> fieldCheck) {
             return addIncluded(new LegacySingletonFieldFilter(fieldCheck));
         }
 
+        /**
+         * Register singleton beans from static methods.
+         * @param memberCheck the additional check methods have to fulfill to be included
+         */
         public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> memberCheck) {
             return addIncluded(new LegacyBeanMethodFilter(SCOPE_SINGLETON, memberCheck));
         }
@@ -123,6 +141,10 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
     public class PrototypeBuilder extends Builder {
 
+        /**
+         * Register prototypes beans from static methods.
+         * @param memberCheck the additional check methods have to fulfill to be included
+         */
         public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> memberCheck) {
             return addIncluded(new LegacyBeanMethodFilter(SCOPE_PROTOTYPE, memberCheck));
         }

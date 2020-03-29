@@ -37,6 +37,10 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
     }
 
 
+    /**
+     * Creates a {@link ClassPathBeanDefinitionScanner} with all type filters configured, scans the base packages
+     * and register bean definitions created. Afterwards register bean definitions created from factories configured.
+     */
     @Override
     protected void postProcess(BeanDefinitionRegistry registry) {
         ClassPathBeanDefinitionScanner scanner = new LegacyClassPathBeanDefinitionScanner(registry, false, environment,

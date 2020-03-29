@@ -36,11 +36,19 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
         return context.getBean(type);
     }
 
+    /**
+     * Inject the bean factory to be used for legacy bean resolving.
+     * @see #getSpringBean(Class)
+     */
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         BEAN_FACTORY_HOLDER.compareAndSet(null, beanFactory);
     }
 
+    /**
+     * Remove the bean factory used for legacy bean resolving.
+     * @see #getSpringBean(Class)
+     */
     @Override
     public void destroy() {
         BEAN_FACTORY_HOLDER.set(null);
