@@ -3,3 +3,12 @@ language: java
 jdk:
   - openjdk8
   - openjdk11
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: build/docs
+  github_token: $GITHUB_API_KEY
+  on:
+    branch: master
+    jdk: openjdk8
