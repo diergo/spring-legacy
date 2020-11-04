@@ -1,14 +1,13 @@
 package diergo.spring.legacy;
 
+import java.lang.reflect.Member;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
-
-import java.lang.reflect.Member;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
@@ -20,7 +19,9 @@ abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, Be
     protected final Predicate<? super T> accessCheck;
 
     CustomizingTypeFilter(Predicate<? super T> accessCheck) {
-        this.accessCheck = accessCheck;
+        this.accessCheck = MemberPredicates.<T>visible()
+                .and(MemberPredicates.atClass())
+                .and(accessCheck);
     }
 
     @Override

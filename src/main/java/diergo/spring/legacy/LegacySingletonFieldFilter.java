@@ -1,17 +1,15 @@
 package diergo.spring.legacy;
 
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import static diergo.spring.legacy.MemberPredicates.withType;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static java.lang.reflect.Modifier.isPrivate;
-import static java.lang.reflect.Modifier.isStatic;
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 
@@ -22,8 +20,7 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
     @Override
     protected Optional<Field> getAccess(Class<?> type) {
         return Stream.of(type.getDeclaredFields())
-                .filter(field -> isStaticSingletonField(field, type))
-                .filter(accessCheck)
+                .filter(withType(type).and(accessCheck))
                 .findFirst();
     }
 
@@ -42,10 +39,5 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
                 }
             });
         }
-    }
-
-    private static boolean isStaticSingletonField(Field field, Class<?> returnType) {
-        return isStatic(field.getModifiers()) && !isPrivate(field.getModifiers())
-                && returnType.isAssignableFrom(field.getType());
     }
 }

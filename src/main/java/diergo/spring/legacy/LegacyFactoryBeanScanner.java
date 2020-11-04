@@ -1,20 +1,17 @@
 package diergo.spring.legacy;
 
-import org.springframework.beans.FatalBeanException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
+import static org.springframework.util.ReflectionUtils.getAllDeclaredMethods;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static java.lang.reflect.Modifier.isPrivate;
-import static java.lang.reflect.Modifier.isStatic;
-import static org.springframework.util.ReflectionUtils.getAllDeclaredMethods;
+import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 
 public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry, Stream<BeanDefinition>> {
 
@@ -24,7 +21,12 @@ public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry
 
     public LegacyFactoryBeanScanner(Supplier<Class<?>> type, Predicate<? super Method> methodCheck, String scope) {
         this.type = type;
-        this.methodCheck = methodCheck;
+        this.methodCheck = MemberPredicates.withoutParameters()
+                .and(MemberPredicates.returningBeanType())
+                .and(MemberPredicates.noObjectMethod())
+                .and(MemberPredicates.visible())
+                .and(MemberPredicates.atInstance())
+                .and(methodCheck);
         this.scope = scope;
     }
 
@@ -33,7 +35,6 @@ public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry
         Class<?> clazz = type.get();
         String factoryBean = findFactoryBean(clazz, registry);
         return Stream.of(getAllDeclaredMethods(clazz))
-                .filter(this::isFactoryMethod)
                 .filter(methodCheck)
                 .map(method -> createBeanDefinition(factoryBean, method));
     }
@@ -45,14 +46,6 @@ public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry
                 .map(BeanDefinitionHolder::getBeanName)
                 .findAny()
                 .orElseThrow(() -> new FatalBeanException("Missing factory bean of type " + type));
-    }
-
-    private boolean isFactoryMethod(Method method) {
-        Class<?> returnType = method.getReturnType();
-        return !isStatic(method.getModifiers()) && !isPrivate(method.getModifiers())
-                && method.getParameterCount() == 0 && returnType != Void.class
-                && !returnType.isPrimitive() && !returnType.isArray()
-                && !method.getDeclaringClass().equals(Object.class);
     }
 
     private GenericBeanDefinition createBeanDefinition(String factoryBean, Method method) {

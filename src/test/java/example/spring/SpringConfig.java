@@ -1,5 +1,8 @@
 package example.spring;
 
+import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.legacyPackages;
+import static diergo.spring.legacy.MemberPredicates.named;
+
 import diergo.spring.legacy.LegacyBeanRegistryPostProcessor;
 import diergo.spring.legacy.LegacySpringAccess;
 import example.legacy.LegacyFactoryBean;
@@ -7,11 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import java.util.regex.Pattern;
-
-import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.legacyPackages;
-import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.named;
 
 @Configuration
 @ComponentScan

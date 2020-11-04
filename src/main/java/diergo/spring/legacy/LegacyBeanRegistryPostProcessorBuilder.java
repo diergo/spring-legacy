@@ -1,5 +1,18 @@
 package diergo.spring.legacy;
 
+import static diergo.spring.legacy.MemberPredicates.anyConstant;
+import static diergo.spring.legacy.MemberPredicates.anyGetter;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
@@ -8,29 +21,12 @@ import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.core.Ordered;
 import org.springframework.util.ClassUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
-
 /**
  * Builder to configure a post processor registering beans from legacy code.
+ *
  * @see LegacyBeanRegistryPostProcessor
  */
 public class LegacyBeanRegistryPostProcessorBuilder {
-
-    private static final Pattern GETTERS = Pattern.compile("get[A-Z].+");
-    private static final Pattern CONSTANTS = Pattern.compile("[A-Z][A-Z0-9_]+");
 
     /**
      * Build a new post processor scanning the base packages passed.
@@ -90,6 +86,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
     /**
      * Start to configure a factory bean.
+     *
      * @param type the fully qualified name of the factory bean type
      */
     public FactoryBuilder factory(String type) {
@@ -134,6 +131,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         /**
          * Register singleton beans from static fields.
+         *
          * @param fieldCheck the additional check fields have to fulfill to be included
          */
         public LegacyBeanRegistryPostProcessorBuilder fields(Predicate<? super Field> fieldCheck) {
@@ -142,6 +140,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         /**
          * Register singleton beans from static methods.
+         *
          * @param memberCheck the additional check methods have to fulfill to be included
          */
         public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> memberCheck) {
@@ -156,6 +155,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         /**
          * Register prototypes beans from static methods.
+         *
          * @param methodCheck the additional check methods have to fulfill to be included
          */
         public LegacyBeanRegistryPostProcessorBuilder methods(Predicate<? super Method> methodCheck) {
@@ -177,6 +177,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         /**
          * Register singleton beans from factory bean methods.
+         *
          * @param methodCheck the additional check methods have to fulfill to be included
          */
         public LegacyBeanRegistryPostProcessorBuilder singletons(Predicate<? super Method> methodCheck) {
@@ -185,6 +186,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
 
         /**
          * Register prototypes beans from factory bean methods.
+         *
          * @param methodCheck the additional check methods have to fulfill to be included
          */
         public LegacyBeanRegistryPostProcessorBuilder prototypes(Predicate<? super Method> methodCheck) {
@@ -197,23 +199,4 @@ public class LegacyBeanRegistryPostProcessorBuilder {
         }
     }
 
-    public static Predicate<Member> all() {
-        return member -> true;
-    }
-
-    public static Predicate<Member> named(String... names) {
-        return member -> asList(names).contains(member.getName());
-    }
-
-    public static Predicate<Member> named(Pattern name) {
-        return member -> name.matcher(member.getName()).matches();
-    }
-
-    public static Predicate<Method> anyGetter() {
-        return field -> GETTERS.matcher(field.getName()).matches();
-    }
-
-    public static Predicate<Field> anyConstant() {
-        return field -> CONSTANTS.matcher(field.getName()).matches();
-    }
 }
