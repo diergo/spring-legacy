@@ -16,6 +16,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
  * A type filter creating bean definitions for fields with a valid bean type.
  *
  * @see MemberPredicates#withBeanType()
+ * @see LegacyBeanRegistryPostProcessorBuilder.SingletonBuilder#fields(Predicate)
  */
 class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
 

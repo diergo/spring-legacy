@@ -13,7 +13,13 @@ import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 
-public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry, Stream<BeanDefinition>> {
+/**
+ * Creates a number of bean definitions based on a unique registered bean definition and its matching factory methods.
+ * Each of the mathing methods will create a new bean definition with a dependency on the original bean definition.
+ *
+ * @see LegacyBeanRegistryPostProcessorBuilder.FactoryBuilder
+ */
+class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry, Stream<BeanDefinition>> {
 
     private final Supplier<Class<?>> type;
     private final Predicate<? super Method> methodCheck;
@@ -30,6 +36,9 @@ public class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry
         this.scope = scope;
     }
 
+    /**
+     * Find the bean definition with the required type and create bean definitions for each matching method.
+     */
     @Override
     public Stream<BeanDefinition> apply(BeanDefinitionRegistry registry) {
         Class<?> clazz = type.get();

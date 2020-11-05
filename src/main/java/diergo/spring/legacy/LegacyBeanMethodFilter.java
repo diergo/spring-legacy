@@ -17,6 +17,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
  *
  * @see MemberPredicates#withoutParameters()
  * @see MemberPredicates#returningBeanType()
+ * @see LegacyBeanRegistryPostProcessorBuilder.SingletonBuilder#methods(Predicate)
+ * @see LegacyBeanRegistryPostProcessorBuilder.PrototypeBuilder#methods(Predicate)
  */
 class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
 
