@@ -98,7 +98,7 @@ public class LegacyBeanRegistryPostProcessorTest {
         tested.setEnvironment(new StandardEnvironment());
         when(filter.match(any(MetadataReader.class), any(MetadataReaderFactory.class)))
                 .thenReturn(true);
-        when(filter.match(any(BeanDefinition.class)))
+        when(filter.supports(any(BeanDefinition.class)))
                 .thenReturn(true);
     }
 

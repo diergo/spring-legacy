@@ -4,17 +4,19 @@ import java.lang.reflect.Member;
 import java.util.Optional;
 import java.util.function.Predicate;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
+ * A type filter creating bean definitions for visible members declared static on class level.
  *
- * @see LegacyBeanRegistryPostProcessor
+ * @see MemberPredicates#visible()
+ * @see MemberPredicates#atClass()
+ * @see LegacyBeanRegistryPostProcessorBuilder
  */
-abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, BeanDefinitionCustomizer {
+abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, SmartBeanDefinitionCustomizer {
 
     protected final Predicate<? super T> accessCheck;
 
@@ -26,22 +28,24 @@ abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, Be
 
     @Override
     public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
-        return getType(metadataReader.getClassMetadata().getClassName())
-                .flatMap(this::getAccess)
+        return getAccess(metadataReader.getClassMetadata().getClassName())
                 .isPresent();
     }
 
-    public boolean match(BeanDefinition bd) {
-        return getType(bd.getBeanClassName())
-                .flatMap(this::getAccess)
+    @Override
+    public boolean supports(BeanDefinition bd) {
+        return getAccess(bd.getBeanClassName())
                 .isPresent();
     }
 
     @Override
     public void customize(BeanDefinition bd) {
-        getType(bd.getBeanClassName())
-                .flatMap(this::getAccess)
+        getAccess(bd.getBeanClassName())
                 .ifPresent(access -> customizeBeanDefinition(access, bd));
+    }
+
+    private Optional<T> getAccess(String className) {
+        return getType(className).flatMap(this::getAccess);
     }
 
     protected abstract Optional<T> getAccess(Class<?> type);

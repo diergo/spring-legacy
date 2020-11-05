@@ -72,6 +72,6 @@ public class LegacyBeanMethodFilterTest {
     }
 
     private boolean matchBeanDefinition(Class<?> type, CustomizingTypeFilter<?> filter) {
-        return filter.match(new RootBeanDefinition(type));
+        return filter.supports(new RootBeanDefinition(type));
     }
 }

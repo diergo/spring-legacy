@@ -1,6 +1,8 @@
 package diergo.spring.legacy;
 
+import static diergo.spring.legacy.MemberPredicates.noObjectMethod;
 import static diergo.spring.legacy.MemberPredicates.returning;
+import static diergo.spring.legacy.MemberPredicates.returningBeanType;
 import static diergo.spring.legacy.MemberPredicates.withoutParameters;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
@@ -10,12 +12,21 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.config.BeanDefinition;
 
+/**
+ * A type filter creating bean definitions for methods without parameters returning a valid bean type.
+ *
+ * @see MemberPredicates#withoutParameters()
+ * @see MemberPredicates#returningBeanType()
+ */
 class LegacyBeanMethodFilter extends CustomizingTypeFilter<Method> {
 
     private final String scope;
 
     LegacyBeanMethodFilter(String scope, Predicate<? super Method> accessCheck) {
-        super(withoutParameters().and(accessCheck));
+        super(noObjectMethod()
+                .and(withoutParameters())
+                .and(returningBeanType())
+                .and(accessCheck));
         this.scope = scope;
     }
 

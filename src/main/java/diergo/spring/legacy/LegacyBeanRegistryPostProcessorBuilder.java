@@ -17,6 +17,7 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.core.Ordered;
 import org.springframework.util.ClassUtils;
@@ -108,7 +109,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
      *
      * @see org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor
      */
-    public LegacyBeanRegistryPostProcessor build() {
+    public BeanDefinitionRegistryPostProcessor build() {
         if (included.isEmpty()) {
             included.add(new LegacyBeanMethodFilter(SCOPE_SINGLETON, anyGetter()));
             included.add(new LegacySingletonFieldFilter(anyConstant()));

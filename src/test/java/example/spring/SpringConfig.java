@@ -3,9 +3,9 @@ package example.spring;
 import static diergo.spring.legacy.LegacyBeanRegistryPostProcessorBuilder.legacyPackages;
 import static diergo.spring.legacy.MemberPredicates.named;
 
-import diergo.spring.legacy.LegacyBeanRegistryPostProcessor;
 import diergo.spring.legacy.LegacySpringAccess;
 import example.legacy.LegacyFactoryBean;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 public class SpringConfig {
 
     @Bean
-    static LegacyBeanRegistryPostProcessor legacySingletons() {
+    static BeanDefinitionRegistryPostProcessor legacySingletons() {
         return legacyPackages("example")
                 .singletonsFrom().fields(named("INSTANCE"))
                 .singletonsFrom().methods(named("getInstance"))

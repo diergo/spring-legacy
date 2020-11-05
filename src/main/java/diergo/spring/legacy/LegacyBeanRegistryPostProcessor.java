@@ -1,5 +1,8 @@
 package diergo.spring.legacy;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
@@ -12,16 +15,12 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 /**
  * A post processor registering all legacy singletons as spring beans.
  *
  * @see LegacyBeanRegistryPostProcessorBuilder
  */
-public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcessor {
+class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcessor {
 
     private final String[] basePackages;
     private final List<CustomizingTypeFilter<?>> included;
@@ -57,7 +56,7 @@ public class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcess
 
     private void customizeBeanDefinition(BeanDefinition bd) {
         included.stream()
-                .filter(included -> included.match(bd))
+                .filter(included -> included.supports(bd))
                 .findFirst()
                 .ifPresent(included -> included.customize(bd));
     }
