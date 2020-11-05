@@ -68,7 +68,7 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 }
 
 javadoc {
-    options.memberLevel = 'PROTECTED'
+    options.memberLevel = 'PACKAGE'
     options.author = false
     options.source = '1.8'
     options.header = project.name
