@@ -5,6 +5,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.core.type.StandardAnnotationMetadata;
 import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.lang.Nullable;
 
 public class TestMetadataReader implements MetadataReader {
 
@@ -15,6 +16,7 @@ public class TestMetadataReader implements MetadataReader {
     }
 
     @Override
+    @Nullable
     public Resource getResource() {
         return null;
     }
