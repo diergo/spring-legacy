@@ -16,7 +16,7 @@ public class TestMetadataReader implements MetadataReader {
 
     @Override
     public Resource getResource() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override
