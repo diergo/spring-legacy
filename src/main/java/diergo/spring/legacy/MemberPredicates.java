@@ -93,18 +93,32 @@ public final class MemberPredicates {
                 && !method.getReturnType().isArray();
     }
 
+    /**
+     * Allow methods without any parameter.
+     */
     public static Predicate<Method> withoutParameters() {
         return method -> method.getParameterCount() == 0;
     }
 
+    /**
+     * Allow methods not inherited from {@link Object}.
+     */
     public static Predicate<Method> noObjectMethod() {
         return method -> method.getDeclaringClass() != Object.class;
     }
 
+    /**
+     * Allow methods named like a getter.
+     * The name has to start with {@code get} followed by anything starting with an uppercase letter.
+     */
     public static Predicate<Method> anyGetter() {
         return named(GETTERS);
     }
 
+    /**
+     * Allow fields named like a constant.
+     * The has to start with an uppercase latter followed by any combination of uppercase letters, digits and underscore.
+     */
     public static Predicate<Field> anyConstant() {
         return named(CONSTANTS);
     }
