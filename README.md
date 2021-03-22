@@ -1,4 +1,4 @@
-Spring Legacy [![CI status](https://travis-ci.org/aburmeis/spring-legacy.svg)](https://travis-ci.org/aburmeis/spring-legacy/)
+Spring Legacy [![CI status](https://travis-ci.org/diergo/spring-legacy.svg)](https://travis-ci.org/aburmeis/spring-legacy/)
 =============
 
 When migrating a legacy project to dependency injection based on Spring you often need dependencies to be injected
@@ -28,25 +28,12 @@ Have a look into the [example](src/test/java/example/spring/SpringBeanInjectedLe
 [integration test](src/test/java/example/IntegrationTest.java).
 
 
-Dependency
+Dependency [![Release](https://jitpack.io/v/de.diergo/spring-legacy.svg)](https://jitpack.io/#de.diergo/spring-legacy)
 ----------
 
-To integrate the library in your project, use the following dependency:
-
-**gradle:**
-
-```gradle
-  compile 'diergo:spring-legacy:1.0.0'
-```
-
-**maven:**
-```xml
-  <dependency>
-    <groupId>diergo</groupId>
-    <artifactId>spring-legacy</artifactId>
-    <version>1.0.0</version>
-  </dependency>
-```
+To integrate the library in your project, add the artifact `spring-legacy` of group `de.diergo` to your Java dependency
+management. At [JitPack](https://jitpack.io/#de.diergo/spring-legacy) you can find examples for Gradle and Maven.
+The library has no external dependencies.
 
 The library has no external dependencies except [Spring Framework 5](https://spring.io/projects/spring-framework) (spring-context 5.1.0.RELEASE).
 For the release notes, have a look at the [change log](CHANGELOG.md).

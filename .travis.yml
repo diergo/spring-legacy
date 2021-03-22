@@ -5,10 +5,18 @@ jdk:
   - openjdk11
 
 deploy:
-  provider: pages
-  skip_cleanup: true
-  local_dir: build/docs
-  github_token: $GITHUB_API_KEY
-  on:
-    branch: master
-    jdk: openjdk8
+  - provider: releases
+    token: "$GITHUB_API_KEY"
+    file: "build/libs/*.jar"
+    edge: true
+    on:
+      branch: master
+      tags: true
+      jdk: openjdk11
+  - provider: pages
+    skip_cleanup: true
+    local_dir: build/docs
+    github_token: "$GITHUB_API_KEY"
+    on:
+      branch: master
+      jdk: openjdk8
