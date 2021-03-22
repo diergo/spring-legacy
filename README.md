@@ -49,6 +49,7 @@ To integrate the library in your project, use the following dependency:
 ```
 
 The library has no external dependencies except [Spring Framework 5](https://spring.io/projects/spring-framework) (spring-context 5.1.0.RELEASE).
+For the release notes, have a look at the [change log](CHANGELOG.md).
 
 
 License
