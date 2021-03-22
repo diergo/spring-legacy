@@ -1,4 +1,4 @@
-# spring-legacy
+# Spring Legacy
 
 ## Change Log
 
