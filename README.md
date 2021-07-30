@@ -33,7 +33,6 @@ Dependency [![Release](https://jitpack.io/v/de.diergo/spring-legacy.svg)](https:
 
 To integrate the library in your project, add the artifact `spring-legacy` of group `de.diergo` to your Java dependency
 management. At [JitPack](https://jitpack.io/#de.diergo/spring-legacy) you can find examples for Gradle and Maven.
-The library has no external dependencies.
 
 The library has no external dependencies except [Spring Framework 5](https://spring.io/projects/spring-framework) (spring-context 5.1.0.RELEASE).
 For the release notes, have a look at the [change log](CHANGELOG.md).
