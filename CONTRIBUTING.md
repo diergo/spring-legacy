@@ -25,6 +25,4 @@ Changes
 The branch `master` is the integration branch for the upcoming release.
 Past releases are tagged with `v` followed by the version.
 
-Every branch is built continuously by
-[Travis CI](https://travis-ci.com/diergo/spring-legacy/) by executing the task `check`.
-The build is done using Open JDK 8 and 11!
+Every branch is built continuously using [GitHub actions](.github/workflows/gradle.yml).
