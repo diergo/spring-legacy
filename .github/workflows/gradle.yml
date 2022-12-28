@@ -22,11 +22,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Prepare Gradle
+    - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: wrapper
-    - name: Build with Gradle
-      run: ./gradlew build
+        arguments: build
       env:
         SPRING: 5
