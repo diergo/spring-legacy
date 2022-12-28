@@ -2,8 +2,9 @@ Spring Legacy [![CI status](https://travis-ci.com/diergo/spring-legacy.svg)](htt
 =============
 
 When migrating a legacy project to dependency injection based on Spring you often need dependencies to be injected
-found in legacy code which has no Spring support. [This library](https://diergo.github.io/spring-legacy/javadoc/) provides class path scanning to create bean definitions
-for typical singleton and factory patterns found in legacy code. You may also access Spring beans from legacy code.
+found in legacy code which has no Spring support. [This library](https://diergo.github.io/spring-legacy/javadoc/)
+provides class path scanning to create bean definitions for typical singleton and factory patterns found in legacy code.
+You may also access Spring beans from legacy code.
 
 
 Usage
@@ -34,8 +35,8 @@ Dependency [![Release](https://jitpack.io/v/de.diergo/spring-legacy.svg)](https:
 To integrate the library in your project, add the artifact `spring-legacy` of group `de.diergo` to your Java dependency
 management. At [JitPack](https://jitpack.io/#de.diergo/spring-legacy) you can find examples for Gradle and Maven.
 
-The library has no external dependencies except [Spring Framework 5](https://spring.io/projects/spring-framework) (spring-context 5.1.0.RELEASE).
-For the release notes, have a look at the [change log](CHANGELOG.md).
+The library has no external dependencies except [Spring Framework](https://spring.io/projects/spring-framework)
+(spring-context starting with 5.1.0.RELEASE). For the release notes, have a look at the [change log](CHANGELOG.md).
 
 
 License

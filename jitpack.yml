@@ -1,4 +1,6 @@
 jdk:
-  - openjdk11
+  - openjdk17
 install:
   - ./gradlew clean assemble publishToMavenLocal
+env:
+  SPRING: 5
