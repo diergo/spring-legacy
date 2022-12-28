@@ -13,19 +13,31 @@ permissions:
 
 jobs:
   ci:
+    strategy:
+      matrix:
+        jdk:
+          - 8
+          - 11
+          - 17
+        spring:
+          - 5
+          - 6
+        exclude:
+          jdk: 8
+          spring: 6
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Set up JDK 17
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
+      env:
+        SPRING: ${{ matrix.spring }}
       with:
         gradle-version: wrapper
         arguments: build
-      env:
-        SPRING: 5
