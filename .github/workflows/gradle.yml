@@ -25,6 +25,8 @@ jobs:
         exclude:
           - jdk: 8
             spring: 6
+          - jdk: 11
+            spring: 6
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

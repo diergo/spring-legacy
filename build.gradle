@@ -8,6 +8,8 @@ plugins {
 ext {
     versions = [:]
     versions.spring = System.getenv("SPRING") == '5' ? '5.3.24' : '6.0.3'
+    versions.springApi = System.getenv("SPRING") == '5' ? '5.1.0.RELEASE' : '6.0.0'
+    versions.target = System.getenv("SPRING") == '5' ? 8 : 17
     versions.junit = '5.9.1'
 }
 
@@ -19,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    api "org.springframework:spring-context:5.1.0.RELEASE"
+    api "org.springframework:spring-context:${versions.springApi}"
     implementation "org.springframework:spring-context:${versions.spring}"
     compileOnly "com.github.spotbugs:spotbugs-annotations:4.7.3"
 
@@ -32,7 +34,7 @@ dependencies {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.toVersion(versions.target)
     withJavadocJar()
     withSourcesJar()
 }
