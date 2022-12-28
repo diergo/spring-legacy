@@ -22,7 +22,7 @@ Any bugs or feature requests should be reported as [issues](https://github.com/d
 Changes
 --------
 
-The branch `master` is the integration branch for the upcoming release.
+The branch `main` is the integration branch for the upcoming release.
 Past releases are tagged with `v` followed by the version.
 
 Every branch is built continuously using [GitHub actions](.github/workflows/gradle.yml).
