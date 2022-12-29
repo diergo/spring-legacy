@@ -15,6 +15,8 @@ ext {
 
 version = "${majorVersion}.${minorVersion}.${patchVersion}"
 
+// dependencies
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -23,7 +25,6 @@ repositories {
 dependencies {
     api "org.springframework:spring-context:${versions.springApi}"
     implementation "org.springframework:spring-context:${versions.spring}"
-    compileOnly "com.github.spotbugs:spotbugs-annotations:4.7.3"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
@@ -31,6 +32,8 @@ dependencies {
             'org.mockito:mockito-junit-jupiter:4.10.0'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
 }
+
+// compiling
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

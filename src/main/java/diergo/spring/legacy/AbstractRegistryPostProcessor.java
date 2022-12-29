@@ -1,6 +1,5 @@
 package diergo.spring.legacy;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -34,14 +33,13 @@ abstract class AbstractRegistryPostProcessor implements BeanDefinitionRegistryPo
     }
 
     @Override
-    @SuppressFBWarnings("BC_UNCONFIRMED_CAST")
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         int factoryId = System.identityHashCode(beanFactory);
         if (!factoriesPostProcessed.add(factoryId)) {
             throw new IllegalStateException(
                     "postProcessBeanFactory already called on this post-processor against " + beanFactory);
         }
-        if (!this.registriesPostProcessed.contains(factoryId)) {
+        if (beanFactory instanceof BeanDefinitionRegistry && !this.registriesPostProcessed.contains(factoryId)) {
             // BeanDefinitionRegistryPostProcessor hook apparently not supported...
             // Simply call processConfigurationClasses lazily at this point then.
             postProcess((BeanDefinitionRegistry) beanFactory);
