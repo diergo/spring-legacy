@@ -1,3 +1,5 @@
+import com.github.spotbugs.snom.SpotBugsTask
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -42,42 +44,21 @@ java {
     withSourcesJar()
 }
 
+tasks.withType(JavaCompile) {
+    configure(options) {
+        encoding = 'UTF-8'
+        deprecation = true
+        compilerArgs << "-Xlint:unchecked"
+    }
+}
+
+// unit tests
+
 test {
     useJUnitPlatform()
 }
 
-jacocoTestReport {
-    reports {
-        html.required = true
-    }
-}
-
-jacocoTestCoverageVerification {
-    dependsOn jacocoTestReport
-    violationRules {
-        rule {
-            limit {
-                counter = 'CLASS'
-                minimum = 0.9
-            }
-            limit {
-                counter = 'LINE'
-                minimum = 0.8
-            }
-            limit {
-                counter = 'BRANCH'
-                minimum = 0.7
-            }
-        }
-    }
-}
-
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
-    reports {
-        xml.required = false
-        html.required = true
-    }
-}
+// publishing
 
 javadoc {
     options.memberLevel = 'PACKAGE'
@@ -97,7 +78,7 @@ tasks.withType(Jar) {
     }
     manifest {
         attributes(
-                "Automatic-Module-Name": "${project.group}.${project.name}",
+                "Automatic-Module-Name": "diergo.spring.legacy",
                 "Specification-Title": project.description,
                 "Specification-Version": "${majorVersion}.${minorVersion}",
                 "Specification-Vendor": vendor,
@@ -126,16 +107,46 @@ publishing {
     }
 }
 
-task release(group: 'Publishing', description: 'Build the testes artifacts for a release.') {
-    doFirst {
-        project.version = "${majorVersion}.${minorVersion}.${patchVersion}"
+// code analysis
+
+tasks.withType(SpotBugsTask) {
+    reports {
+        xml.required = false
+        html.required = true
     }
-    finalizedBy build
 }
 
-wrapper {
-    gradleVersion = '6.8.3'
+jacocoTestReport {
+    reports {
+        html.required = true
+    }
 }
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            limit {
+                counter = 'CLASS'
+                minimum = 0.9
+            }
+            limit {
+                counter = 'LINE'
+                minimum = 0.8
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.7
+            }
+        }
+    }
+}
+
+// task dependencies
 
 check.dependsOn jacocoTestCoverageVerification, jacocoTestReport
 assemble.dependsOn javadoc
+
+wrapper {
+    gradleVersion = '7.6'
+}
