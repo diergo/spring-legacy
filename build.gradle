@@ -61,14 +61,15 @@ test {
 // publishing
 
 javadoc {
-    options.memberLevel = 'PACKAGE'
-    options.author = false
-    options.source = '1.8'
-    options.header = "${project.description} ${project.version}"
-    options.links(["https://docs.oracle.com/javase/8/docs/api/",
-                   "https://docs.spring.io/spring-framework/docs/${versions.spring}/javadoc-api/"] as String[])
-    options.encoding = 'UTF-8'
-    options.addStringOption('Xdoclint:none', '-quiet')
+    options {
+        memberLevel = JavadocMemberLevel.PROTECTED
+        source = '1.8'
+        author = false
+        header "${project.description} ${project.version}"
+        links 'https://docs.oracle.com/javase/8/docs/api/', "https://docs.spring.io/spring-framework/docs/${versions.spring}/javadoc-api/"
+        encoding 'UTF-8'
+        addStringOption('Xdoclint:none', '-quiet')
+    }
 }
 
 tasks.withType(Jar) {
