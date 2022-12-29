@@ -42,4 +42,4 @@ jobs:
         SPRING: ${{ matrix.spring }}
       with:
         gradle-version: wrapper
-        arguments: build
+        arguments: check
