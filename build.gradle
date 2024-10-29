@@ -4,15 +4,15 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'jacoco'
-    id 'com.github.spotbugs' version '5.0.13'
+    id 'com.github.spotbugs' version '6.0.25'
 }
 
 ext {
     versions = [:]
-    versions.spring = System.getenv("SPRING") == '5' ? '5.3.24' : '6.0.3'
-    versions.springApi = System.getenv("SPRING") == '5' ? '5.1.0.RELEASE' : '6.0.0'
+    versions.spring = System.getenv("SPRING") == '5' ? '5.3.39' : '6.1.14'
+    versions.springApi = System.getenv("SPRING") == '5' ? '5.3.0' : '6.1.0'
     versions.target = System.getenv("SPRING") == '5' ? 8 : 17
-    versions.junit = '5.9.1'
+    versions.junit = '5.11.3'
 }
 
 version = "${majorVersion}.${minorVersion}.${patchVersion}"
@@ -31,7 +31,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
             'org.hamcrest:hamcrest:2.2',
-            'org.mockito:mockito-junit-jupiter:4.10.0'
+            'org.mockito:mockito-junit-jupiter:5.14.2'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
 }
 

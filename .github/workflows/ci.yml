@@ -17,15 +17,13 @@ jobs:
       matrix:
         jdk:
           - 8
-          - 11
           - 17
+          - 21
         spring:
           - 5
           - 6
         exclude:
           - jdk: 8
-            spring: 6
-          - jdk: 11
             spring: 6
     runs-on: ubuntu-latest
     steps:
