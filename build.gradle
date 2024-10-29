@@ -9,9 +9,9 @@ plugins {
 
 ext {
     versions = [:]
-    versions.spring = System.getenv("SPRING") == '5' ? '5.3.39' : '6.1.14'
-    versions.springApi = System.getenv("SPRING") == '5' ? '5.3.0' : '6.1.0'
-    versions.target = System.getenv("SPRING") == '5' ? 8 : 17
+    versions.spring = System.getenv("SPRING") == '6' ? '6.1.14' : '5.3.39'
+    versions.springApi = System.getenv("SPRING") == '6' ? '6.1.0' : '5.3.0'
+    versions.target = System.getenv("SPRING") == '6' ? 17 : 8
     versions.junit = '5.11.3'
 }
 
@@ -28,11 +28,11 @@ dependencies {
     api "org.springframework:spring-context:${versions.springApi}"
     implementation "org.springframework:spring-context:${versions.spring}"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}",
+    testImplementation "org.junit.jupiter:junit-jupiter:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
             'org.hamcrest:hamcrest:2.2',
             'org.mockito:mockito-junit-jupiter:5.14.2'
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 // compiling
@@ -44,7 +44,7 @@ java {
     withSourcesJar()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     configure(options) {
         encoding = 'UTF-8'
         deprecation = true
@@ -52,7 +52,7 @@ tasks.withType(JavaCompile) {
     }
 }
 
-// unit tests
+// testing
 
 test {
     useJUnitPlatform()
@@ -72,7 +72,7 @@ javadoc {
     }
 }
 
-tasks.withType(Jar) {
+tasks.withType(Jar).configureEach {
     from(project.projectDir) {
         include 'LICENSE'
         into('META-INF')
@@ -93,7 +93,7 @@ tasks.withType(Jar) {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
             pom {
                 description = project.description
@@ -121,7 +121,7 @@ publishing {
 
 // code analysis
 
-tasks.withType(SpotBugsTask) {
+tasks.withType(SpotBugsTask).configureEach {
     reports {
         xml.required = false
         html.required = true
