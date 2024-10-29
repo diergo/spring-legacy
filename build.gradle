@@ -163,7 +163,3 @@ jacocoTestCoverageVerification {
 
 check.dependsOn jacocoTestCoverageVerification, jacocoTestReport
 assemble.dependsOn javadoc
-
-wrapper {
-    gradleVersion = '7.6'
-}
