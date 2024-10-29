@@ -1,4 +1,4 @@
-package example;
+package diergo.spring.legacy;
 
 import example.legacy.*;
 import example.spring.SpringBeanInjectedLegacy;
@@ -12,7 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class IntegrationTest {
+public class ExampleIntegrationTest {
 
     private AnnotationConfigApplicationContext applicationContext;
 
