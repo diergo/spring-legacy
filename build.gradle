@@ -129,9 +129,7 @@ tasks.withType(SpotBugsTask) {
 }
 
 spotbugs {
-    test {
-        exclude("example")
-    }
+    excludeFilter = file("spotbugs-excludes.xml")
 }
 
 jacocoTestReport {
