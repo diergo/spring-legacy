@@ -36,7 +36,7 @@ To integrate the library in your project, add the artifact `spring-legacy` of gr
 management. At [JitPack](https://jitpack.io/#de.diergo/spring-legacy) you can find examples for Gradle and Maven.
 
 The library has no external dependencies except [Spring Framework](https://spring.io/projects/spring-framework)
-(spring-context starting with 5.1.0.RELEASE). For the release notes, have a look at the [change log](CHANGELOG.md).
+(spring-context starting with 5.3.0). For the release notes, have a look at the [change log](CHANGELOG.md).
 
 
 License

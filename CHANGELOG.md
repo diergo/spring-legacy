@@ -8,6 +8,7 @@ file. This project adheres to [Semantic Versioning](http://semver.org).
 ### 1.0.1
 
 * fix automatic module name to `diergo.spring.legacy` 
+* upgrade Spring dependency to 5.3
 
 ### 1.0.0
 
