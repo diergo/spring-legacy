@@ -13,6 +13,7 @@ ext {
     versions.springApi = System.getenv("SPRING") == '6' ? '6.1.0' : '5.3.0'
     versions.target = System.getenv("SPRING") == '6' ? 17 : 8
     versions.junit = '5.11.3'
+    versions.mockito = System.getenv("SPRING") == '6' ? '5.14.2' : '4.11.0'
 }
 
 version = "${majorVersion}.${minorVersion}.${patchVersion}"
@@ -31,7 +32,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:${versions.junit}",
             "org.springframework:spring-test:${versions.spring}",
             'org.hamcrest:hamcrest:2.2',
-            'org.mockito:mockito-junit-jupiter:5.14.2'
+            "org.mockito:mockito-junit-jupiter:${versions.mockito}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 

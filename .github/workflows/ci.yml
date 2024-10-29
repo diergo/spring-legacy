@@ -25,6 +25,7 @@ jobs:
         exclude:
           - jdk: 8
             spring: 6
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
