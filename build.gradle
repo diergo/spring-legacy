@@ -97,11 +97,22 @@ publishing {
             from components.java
             pom {
                 description = project.description
+                developers {
+                    developer {
+                        name = 'Arne Burmeister'
+                        email = 'arne@burmeister-teltow.de'
+                    }
+                }
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
                         url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/${project.group}/${project.name}.git"
+                    developerConnection = "scm:git:ssh:git@github.com:${project.group}/${project.name}.git"
+                    url = "https://github.com/${project.group}/${project.name}"
                 }
             }
         }
