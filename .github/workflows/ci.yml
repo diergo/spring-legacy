@@ -28,16 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-    - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/checkout@v4
+    - name: Setup JDK
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.jdk }}
-        distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
+        distribution: temurin
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+    - name: Run build
       env:
         SPRING: ${{ matrix.spring }}
-      with:
-        gradle-version: wrapper
-        arguments: check
+      run: ./gradlew check
