@@ -16,27 +16,23 @@ jobs:
     strategy:
       matrix:
         jdk:
-          - 8
-          - 17
           - 21
+          - 25
         spring:
           - 5
           - 6
-        exclude:
-          - jdk: 8
-            spring: 6
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Setup JDK
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.jdk }}
         distribution: temurin
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v6
     - name: Run build
       env:
         SPRING: ${{ matrix.spring }}
