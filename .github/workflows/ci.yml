@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         jdk:
+          - 17
           - 21
           - 25
         spring:
