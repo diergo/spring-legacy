@@ -9,7 +9,7 @@ plugins {
 
 ext {
     versions = [:]
-    versions.java = System.getenv("SPRING") == '5' ? JavaVersion.VERSION_1_8 : JavaVersion.VERSION_21
+    versions.java = System.getenv("SPRING") == '5' ? JavaVersion.VERSION_1_8 : JavaVersion.current()
     versions.spring = System.getenv("SPRING") == '5' ? '5.3.39' : '6.2.19'
     versions.springApi = System.getenv("SPRING") == '5' ? '5.3.0' : '6.2.0'
     versions.junit = '5.14.4'
