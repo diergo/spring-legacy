@@ -13,7 +13,7 @@ ext {
     versions.spring = System.getenv("SPRING") == '6' ? '6.2.19' : '5.3.39'
     versions.springApi = System.getenv("SPRING") == '6' ? '6.2.0' : '5.3.0'
     versions.junit = '5.14.4'
-    versions.mockito = System.getenv("SPRING") == '6' ? '5.23.8' : '4.11.0'
+    versions.mockito = System.getenv("SPRING") == '6' ? '5.24.0' : '4.11.0'
 }
 
 version = "${majorVersion}.${minorVersion}.${patchVersion}"
