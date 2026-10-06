@@ -39,7 +39,8 @@ dependencies {
 // compiling
 
 java {
-    sourceCompatibility = versions.java
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = versions.java
     withJavadocJar()
     withSourcesJar()
 }
