@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.lang.Nullable;
 
 /**
  * Support class to combine type filtering, bean definition filtering and customizing as needed by the post processor.
@@ -44,7 +45,7 @@ abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, Sm
                 .ifPresent(access -> customizeBeanDefinition(access, bd));
     }
 
-    private Optional<T> getAccess(String className) {
+    private Optional<T> getAccess(@Nullable String className) {
         return getType(className).flatMap(this::getAccess);
     }
 
@@ -52,7 +53,10 @@ abstract class CustomizingTypeFilter<T extends Member> implements TypeFilter, Sm
 
     protected abstract void customizeBeanDefinition(T access, BeanDefinition bd);
 
-    static Optional<Class<?>> getType(String className) {
+    static Optional<Class<?>> getType(@Nullable String className) {
+        if (className == null) {
+            return Optional.empty();
+        }
         try {
             return Optional.of(Class.forName(className, false, CustomizingTypeFilter.class.getClassLoader()));
         } catch (ClassNotFoundException | LinkageError e) {

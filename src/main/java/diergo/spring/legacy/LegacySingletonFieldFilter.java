@@ -40,9 +40,9 @@ class LegacySingletonFieldFilter extends CustomizingTypeFilter<Field> {
     protected void customizeBeanDefinition(Field access, BeanDefinition bd) {
         bd.setScope(SCOPE_SINGLETON);
         bd.setLazyInit(true);
+        access.setAccessible(true);
         AbstractBeanDefinition adb = (AbstractBeanDefinition) bd;
         adb.setInstanceSupplier(() -> {
-            access.setAccessible(true);
             try {
                 return access.get(adb.hasBeanClass() ? adb.getBeanClass() : Class.forName(adb.getBeanClassName()));
             } catch (IllegalAccessException | ClassNotFoundException e) {

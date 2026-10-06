@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  */
 public final class MemberPredicates {
 
-    private static final Pattern GETTERS = Pattern.compile("get[A-Z].+");
-    private static final Pattern CONSTANTS = Pattern.compile("[A-Z][A-Z0-9_]+");
+    private static final Pattern GETTERS = Pattern.compile("get[A-Z].*");
+    private static final Pattern CONSTANTS = Pattern.compile("[A-Z][A-Z0-9_]*");
 
     /**
      * Allow any members.
@@ -122,4 +122,6 @@ public final class MemberPredicates {
     public static Predicate<Field> anyConstant() {
         return named(CONSTANTS);
     }
+
+    private MemberPredicates() {}
 }

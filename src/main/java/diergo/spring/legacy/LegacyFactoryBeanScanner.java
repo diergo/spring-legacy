@@ -32,6 +32,8 @@ class LegacyFactoryBeanScanner implements Function<BeanDefinitionRegistry, Strea
                 .and(MemberPredicates.noObjectMethod())
                 .and(MemberPredicates.visible())
                 .and(MemberPredicates.atInstance())
+                .and(m -> !m.isBridge())
+                .and(m -> !m.isSynthetic())
                 .and(methodCheck);
         this.scope = scope;
     }

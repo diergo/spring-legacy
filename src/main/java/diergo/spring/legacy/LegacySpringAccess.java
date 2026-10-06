@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @see org.springframework.context.annotation.Import
  * @since 1.0
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
 
     private static final AtomicReference<BeanFactory> BEAN_FACTORY_HOLDER = new AtomicReference<>();
@@ -36,13 +36,16 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
         return context.getBean(type);
     }
 
+    private BeanFactory myBeanFactory;
+
     /**
      * Inject the bean factory to be used for legacy bean resolving.
      * @see #getSpringBean(Class)
      */
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
-        BEAN_FACTORY_HOLDER.compareAndSet(null, beanFactory);
+        myBeanFactory = beanFactory;
+        BEAN_FACTORY_HOLDER.compareAndSet(null, myBeanFactory);
     }
 
     /**
@@ -51,7 +54,7 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
      */
     @Override
     public void destroy() {
-        BEAN_FACTORY_HOLDER.set(null);
+        BEAN_FACTORY_HOLDER.compareAndSet(myBeanFactory, null);
     }
 
     private static class DelegatingTargetSource<T> implements TargetSource {
@@ -87,12 +90,11 @@ public class LegacySpringAccess implements BeanFactoryAware, DisposableBean {
         }
 
         private T getFromContext() {
-            return BEAN_FACTORY_HOLDER.updateAndGet(old -> {
-                if (old != null) {
-                    return old;
-                }
+            BeanFactory factory = BEAN_FACTORY_HOLDER.get();
+            if (factory == null) {
                 throw new ApplicationContextException("Spring application context not started");
-            }).getBean(type);
+            }
+            return factory.getBean(type);
         }
     }
 }

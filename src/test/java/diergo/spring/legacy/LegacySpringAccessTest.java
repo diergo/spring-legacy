@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class LegacySpringAccessTest {
 
     private BeanFactory beanFactory;
+    private LegacySpringAccess access = new LegacySpringAccess();
 
     @Test
     public void springBeanCanBeRetrievedAsProxyBeforeApplicationContextAvailable() {
@@ -34,14 +35,14 @@ public class LegacySpringAccessTest {
     public void springBeanProxyCanBeUsedAfterApplicationContextAppeared() {
         TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
-        new LegacySpringAccess().setBeanFactory(beanFactory);
+        access.setBeanFactory(beanFactory);
 
         actual.doIt();
     }
 
     @Test
     public void springBeanIsRetrievedFromApplicationContextIfAvailable() {
-        new LegacySpringAccess().setBeanFactory(beanFactory);
+        access.setBeanFactory(beanFactory);
 
         TestBean actual = LegacySpringAccess.getSpringBean(TestBean.class);
 
@@ -57,7 +58,7 @@ public class LegacySpringAccessTest {
 
     @AfterEach
     void cleanupContext() {
-        new LegacySpringAccess().destroy();
+        access.destroy();
     }
 
     static class TestBean {

@@ -50,15 +50,13 @@ class LegacyBeanRegistryPostProcessor extends AbstractRegistryPostProcessor {
         factories.stream()
                 .flatMap(factory -> factory.apply(registry))
                 .map(bd -> new BeanDefinitionHolder(bd, beanNameGenerator.generateBeanName(bd, registry)))
-                .filter(bdh -> !registry.containsBeanDefinition(bdh.getBeanName()))
                 .forEach(bdh -> BeanDefinitionReaderUtils.registerBeanDefinition(bdh, registry));
     }
 
     private void customizeBeanDefinition(BeanDefinition bd) {
         included.stream()
                 .filter(included -> included.supports(bd))
-                .findFirst()
-                .ifPresent(included -> included.customize(bd));
+                .forEach(included -> included.customize(bd));
     }
 
     private static class LegacyClassPathBeanDefinitionScanner extends ClassPathBeanDefinitionScanner {

@@ -8,6 +8,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SING
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -114,7 +115,7 @@ public class LegacyBeanRegistryPostProcessorBuilder {
             included.add(new LegacyBeanMethodFilter(SCOPE_SINGLETON, anyGetter()));
             included.add(new LegacySingletonFieldFilter(anyConstant()));
         }
-        return new LegacyBeanRegistryPostProcessor(included, factories, beanNameGenerator, order, basePackages);
+        return new LegacyBeanRegistryPostProcessor(new ArrayList<>(included), new ArrayList<>(factories), beanNameGenerator, order, Arrays.copyOf(basePackages, basePackages.length));
     }
 
     private abstract class Builder {
